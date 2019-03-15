@@ -1,0 +1,39 @@
+{
+  "name": "@jslib/cli-utils",
+  "version": "1.0.0",
+  "description": "utilities for @jslib/cli packages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logan70/jslib-cli.git",
+    "directory": "packages/@jslib/cli-utils"
+  },
+  "keywords": [
+    "jslib",
+    "cli",
+    "cli-utils"
+  ],
+  "author": "Logan Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logan70/jslib-cli/issues"
+  },
+  "homepage": "https://github.com/vuejs/logan70/jslib-cli/packages/@jslib/cli-utils#readme",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "execa": "^1.0.0",
+    "joi": "^14.3.1",
+    "launch-editor": "^2.2.1",
+    "lru-cache": "^5.1.1",
+    "ora": "^3.2.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7",
+    "semver": "^5.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
