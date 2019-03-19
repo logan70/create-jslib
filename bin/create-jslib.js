@@ -91,7 +91,6 @@ program
   .option('-f, --force', 'Overwrite target directory if it exists')
   .option('-x, --proxy', 'Use specified proxy when creating project')
   .action((name, cmd) => {
-    console.log(cmd)
     const options = cleanArgs(cmd)
 
     if (minimist(process.argv.slice(3))._.length > 1) {
