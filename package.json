@@ -1,0 +1,58 @@
+{
+  "name": "create-jslib",
+  "version": "1.0.0",
+  "description": "CLI tool for building JavaScript libraries.",
+  "main": "index.js",
+  "bin": {
+    "create-jslib": "bin/create-jslib.js"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logan70/create-jslib.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bundleDependencies": false,
+  "bugs": {
+    "url": "https://github.com/logan70/create-jslib/issues"
+  },
+  "homepage": "https://github.com/logan70/create-jslib#readme",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "commander": "^2.19.0",
+    "debug": "^4.1.1",
+    "deepmerge": "^3.2.0",
+    "ejs": "^2.6.1",
+    "envinfo": "^7.1.0",
+    "execa": "^1.0.0",
+    "fs-extra": "^7.0.1",
+    "glob-to-regexp": "^0.4.0",
+    "globby": "^9.0.0",
+    "inquirer": "^6.2.2",
+    "isbinaryfile": "^4.0.0",
+    "javascript-stringify": "^2.0.0",
+    "joi": "^14.3.1",
+    "jslib-util": "^1.0.1",
+    "lodash.clonedeep": "^4.5.0",
+    "lru-cache": "^5.1.1",
+    "minimist": "^1.2.0",
+    "ora": "^3.2.0",
+    "recast": "^0.17.3",
+    "request-promise-native": "^1.0.7",
+    "resolve": "^1.10.0",
+    "semver": "^5.6.0",
+    "slash": "^2.0.0",
+    "validate-npm-package-name": "^3.0.0",
+    "yaml-front-matter": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=8.9"
+  }
+}
