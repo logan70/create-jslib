@@ -10,7 +10,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "release": "standard-version"
+    "release": "standard-version -t create-jslib@"
   },
   "repository": {
     "type": "git",
