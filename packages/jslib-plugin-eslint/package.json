@@ -1,0 +1,37 @@
+{
+  "name": "jslib-plugin-eslint",
+  "version": "1.0.8",
+  "description": "eslint plugin for create-jslib",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logan70/jslib-plugin-eslint.git"
+  },
+  "scripts": {
+    "release": "standard-version -t jslib-plugin-eslint@"
+  },
+  "keywords": [
+    "jslib",
+    "elint",
+    "cli"
+  ],
+  "author": "Logan Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logan70/create-jslib/issues"
+  },
+  "homepage": "https://github.com/logan70/jslib-plugin-eslint#readme",
+  "dependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.15.1",
+    "globby": "^9.1.0",
+    "jslib-util": "^1.1.0",
+    "rollup-plugin-eslint": "^5.0.0"
+  },
+  "devDependencies": {
+    "standard-version": "^5.0.2"
+  },
+  "engines": {
+    "node": ">=8.9"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "jslib-plugin-doc",
+  "version": "1.0.2",
+  "description": "documentation plugin for create-jslib",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logan70/jslib-plugin-babel.git"
+  },
+  "scripts": {
+    "release": "standard-version -t jslib-plugin-doc@"
+  },
+  "keywords": [
+    "jslib",
+    "babel",
+    "documentation"
+  ],
+  "author": "Logan Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logan70/create-jslib/issues"
+  },
+  "homepage": "https://github.com/logan70/create-jslib/tree/dev/packages/jslib-plugin-doc#readme",
+  "dependencies": {
+    "jslib-util": "^1.1.0"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.5.5",
+    "docdash": "^1.0.3",
+    "typedoc": "^0.14.2",
+    "typedoc-plugin-external-module-name": "^2.0.0",
+    "standard-version": "^5.0.2",
+    "rimraf": "^2.6.3"
+  },
+  "engines": {
+    "node": ">=8.9"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "name": "jslib-util",
+  "version": "1.1.0",
+  "description": "utilities for create-jslib packages",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logan70/jslib-util.git"
+  },
+  "scripts": {
+    "release": "standard-version"
+  },
+  "keywords": [
+    "jslib",
+    "cli",
+    "cli-utils"
+  ],
+  "author": "Logan Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logan70/create-jslib/issues"
+  },
+  "homepage": "https://github.com/logan70/jslib-util#readme",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "execa": "^1.0.0",
+    "joi": "^14.3.1",
+    "launch-editor": "^2.2.1",
+    "lru-cache": "^5.1.1",
+    "ora": "^3.2.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7",
+    "semver": "^5.6.0"
+  },
+  "devDependencies": {
+    "standard-version": "^5.0.2"
+  },
+  "engines": {
+    "node": ">=8.9"
+  }
+}

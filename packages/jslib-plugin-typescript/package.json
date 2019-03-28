@@ -1,0 +1,43 @@
+{
+  "name": "jslib-plugin-typescript",
+  "version": "1.0.5",
+  "description": "typescript plugin for create-jslib",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logan70/jslib-plugin-typescript.git"
+  },
+  "scripts": {
+    "release": "standard-version -t jslib-plugin-typescript@"
+  },
+  "keywords": [
+    "jslib",
+    "typescript",
+    "cli"
+  ],
+  "author": "Logan Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logan70/create-jslib/issues"
+  },
+  "homepage": "https://github.com/logan70/jslib-plugin-typescript#readme",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "globby": "^9.1.0",
+    "jslib-util": "^1.1.0",
+    "rollup-plugin-typescript2": "^0.20.1",
+    "tslint": "^5.14.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-transform-runtime": "^7.3.4",
+    "@types/chai": "^4.1.7",
+    "@types/jest": "^24.0.11",
+    "@types/mocha": "^5.2.6",
+    "standard-version": "^5.0.2",
+    "typescript": "^3.3.3333"
+  },
+  "engines": {
+    "node": ">=8.9"
+  }
+}
