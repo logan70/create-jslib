@@ -1,5 +1,8 @@
 module.exports = api => {
   const pkg = {
+    scripts: {
+      doc: 'cross-env NODE_ENV=production jslib-service doc'
+    },
     devDependencies: {
       rimraf: '^2.6.3'
     }
