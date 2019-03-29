@@ -1,6 +1,6 @@
 {
   "name": "jslib-service",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "local service for create-jslib projects",
   "main": "index.js",
   "bin": {
