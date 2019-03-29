@@ -64,10 +64,8 @@ module.exports = (api, options) => {
       if (event.code === 'START') {
         stamp = new Date().getTime()
         clearConsole()
-        if (isFirstCompile) {
-          info('Building for development...')
-          console.log()
-        }
+        info('Building for development...')
+        console.log()
         const beforeFns = api.service.beforeFns['dev']
         if (beforeFns && beforeFns.length) {
           for (const beforeFn of beforeFns) {
@@ -86,6 +84,7 @@ module.exports = (api, options) => {
             await afterFn(args)
           }
         }
+        clearConsole()
         done(`Compiled successfully in ${new Date().getTime() - stamp}ms`)
         log()
         log(formatStats(args, api))
