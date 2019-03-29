@@ -10,7 +10,8 @@ module.exports = api => {
     },
     dependencies: {
       '@babel/runtime': '^7.3.4',
-      '@babel/polyfill': '^7.2.5'
+      '@babel/polyfill': '^7.2.5',
+      'core-js': '^3.0.0'
     }
   }
 

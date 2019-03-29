@@ -11,7 +11,8 @@ exports.config = api => {
           // 是否将ES6模块转为CommonJS模块，必须为false，rollup只支持ES6模块
           modules: false,
           // 按需进行polyfill
-          useBuiltIns: 'usage'
+          useBuiltIns: 'usage',
+          corejs: '3.0.0',
         }
       ]
     ],
