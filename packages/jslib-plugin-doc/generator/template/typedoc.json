@@ -1,0 +1,11 @@
+<%_ if (useTS) { _%>
+{
+  "mode": "Modules",
+  "out": "docs",
+  "includes": ["src"],
+  "target": "ESNext",
+  "module": "ES6",
+  "logger": "none",
+  "hideGenerator": true
+}
+<%_ } _%>

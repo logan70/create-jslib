@@ -1,0 +1,38 @@
+{
+  "name": "jslib-plugin-babel",
+  "version": "2.0.0",
+  "description": "babel plugin for create-jslib",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logan70/create-jslib.git",
+    "directory": "packages/jslib-plugin-babel"
+  },
+  "keywords": [
+    "jslib",
+    "babel",
+    "cli"
+  ],
+  "author": "Logan Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logan70/create-jslib/issues"
+  },
+  "homepage": "https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-babel#readme",
+  "dependencies": {
+    "jslib-util": "latest",
+    "rollup-plugin-babel": "^4.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-transform-runtime": "^7.4.3",
+    "@babel/polyfill": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-typescript": "^7.3.3",
+    "@babel/runtime": "^7.4.3",
+    "core-js": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=8.9"
+  }
+}

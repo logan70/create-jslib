@@ -1,0 +1,41 @@
+{
+  "name": "jslib-plugin-eslint",
+  "version": "2.0.0",
+  "description": "eslint plugin for create-jslib",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logan70/create-jslib.git",
+    "directory": "packages/@vue/cli-plugin-eslint"
+  },
+  "keywords": [
+    "jslib",
+    "elint",
+    "cli"
+  ],
+  "author": "Logan Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logan70/create-jslib/issues"
+  },
+  "homepage": "https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-eslint#readme",
+  "dependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-promise": "^4.1.1",
+    "globby": "^9.2.0",
+    "jslib-util": "latest",
+    "rollup-plugin-eslint": "^5.1.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.6.0",
+    "@typescript-eslint/parser": "^1.6.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0"
+  },
+  "engines": {
+    "node": ">=8.9"
+  }
+}
