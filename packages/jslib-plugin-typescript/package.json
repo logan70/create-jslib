@@ -1,6 +1,6 @@
 {
   "name": "jslib-plugin-typescript",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "typescript plugin for create-jslib",
   "main": "index.js",
   "repository": {
@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-typescript#readme",
   "dependencies": {
-    "jslib-util": "latest",
     "globby": "^9.2.0",
+    "jslib-util": "latest",
     "rollup-plugin-typescript2": "^0.20.1",
     "tslint": "^5.15.0"
   },
