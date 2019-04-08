@@ -9,10 +9,6 @@ module.exports = (api, options) => {
     stopSpinner()
   })
 
-  api.addAfterFn('dev', async (args) => {
-    await generateDoc(args, api)
-  })
-
   const details = api.hasPlugin('typescript') ? 'https://typedoc.org' : 'http://usejsdoc.org'
 
   api.registerCommand('doc', {

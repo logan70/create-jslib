@@ -2,7 +2,7 @@
 import { hello } from '../../src/index'
   
 let outputData: string = ''
-const storeLog = (input): string => {
+const storeLog = (input: string): string => {
   outputData += input
   return outputData
 }
