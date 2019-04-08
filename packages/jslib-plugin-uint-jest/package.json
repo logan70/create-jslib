@@ -1,0 +1,32 @@
+{
+  "name": "jslib-plugin-unit-jest",
+  "version": "1.0.0",
+  "description": "unit-jest plugin for create-jslib",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logan70/create-jslib.git",
+    "directory": "packages/jslib-plugin-unit-jest"
+  },
+  "keywords": [
+    "jslib",
+    "cli",
+    "unit-jest"
+  ],
+  "author": "Logan Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/logan70/create-jslib/issues"
+  },
+  "homepage": "https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-unit-jest#readme",
+  "dependencies": {
+    "babel-jest": "^24.7.1",
+    "jest": "^24.7.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@types/jest": "^24.0.11",
+    "ts-jest": "^24.0.2"
+  }
+}

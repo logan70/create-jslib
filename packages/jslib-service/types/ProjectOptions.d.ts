@@ -6,7 +6,9 @@ export interface ProjectOptions {
   productionSourceMap?: boolean;
 
   lintOnSave?: boolean;
-  lingFomatter?: string;
+  lintFomatter?: string;
   banner?: string;
   footer?: string;
+
+  changeRollup?: (config: any) => void;
 }

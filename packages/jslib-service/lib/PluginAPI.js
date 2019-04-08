@@ -44,7 +44,7 @@ class PluginAPI {
   }
 
   /**
-   * Register a command that will become available as `vue-cli-service [name]`.
+   * Register a command that will become available as `jslib-service [name]`.
    *
    * @param {string} name
    * @param {object} [opts]
@@ -77,24 +77,42 @@ class PluginAPI {
 
   /**
    * Register a function that will receive args passed by user
-   * the function is lazy and won't be called until `service.run` is
-   * called
+   * the function will should be called in when register a command
    *
+   * @param {String} mode - mode of command. e.g. 'build' 'dev'
    * @param {function} fn
    */
-  addBeforeFn(mode, fn) {
+  addBeforeFn (mode, fn) {
     (this.service.beforeFns[mode] || (this.service.beforeFns[mode] = [])).push(fn)
   }
 
   /**
    * Register a function that will receive args passed by user
-   * the function is lazy and won't be called until `service.run` is
-   * called
+   * the function will should be called in when register a command
    *
+   * @param {String} mode - mode of command. e.g. 'build' 'dev'
    * @param {function} fn
    */
-  addAfterFn(mode, fn) {
+  addAfterFn (mode, fn) {
     (this.service.afterFns[mode] || (this.service.afterFns[mode] = [])).push(fn)
+  }
+
+  async runBeforeFns (mode, args, api, options) {
+    const beforeFns = this.service.beforeFns[mode]
+    if (beforeFns && beforeFns.length) {
+      for (const beforeFn of beforeFns) {
+        await beforeFn(args, api, options)
+      }
+    }
+  }
+
+  async runAfterFns (mode, args, api, options) {
+    const afterFns = this.service.afterFns[mode]
+    if (afterFns && afterFns.length) {
+      for (const afterFn of afterFns) {
+        await afterFn(args, api, options)
+      }
+    }
   }
 }
 

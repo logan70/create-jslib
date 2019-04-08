@@ -2,7 +2,6 @@ const { logWithSpinner, stopSpinner, log } = require('jslib-util')
 const lint = require('./lint')
 
 module.exports = (api, options) => {
-  const srcType = api.hasPlugin('typescript') ? 'ts' : 'js'
   if (options.lintOnSave) {
     api.addBeforeFn('build', async (args) => {
       logWithSpinner('Linting code...')
@@ -12,7 +11,7 @@ module.exports = (api, options) => {
     })
 
     api.addBeforeFn('dev', async (args) => {
-      args.errorCount = await lint(Object.assign({}, args, { maxErrors: Infinity, maxWarnings: Infinity}), api)
+      args.hasErrorOrWarning = await lint(Object.assign({}, args, { maxErrors: Infinity, maxWarnings: Infinity }), api)
     })
   }
   api.registerCommand('lint', {

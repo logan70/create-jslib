@@ -15,6 +15,9 @@ exports.config = api => {
   if (!api.hasPlugin('typescript')) {
     config.parserOptions.parser = 'babel-eslint'
   }
+  if (api.hasPlugin('typescript')) {
+    config.rules['import/no-unresolved'] = 'off'
+  }
   return config
 }
 

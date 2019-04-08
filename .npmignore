@@ -1,6 +1,0 @@
-__tests__
-__mocks__
-.DS_Store
-node_modules
-demo/
-packages/

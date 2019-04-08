@@ -10,7 +10,7 @@ module.exports = (api, { config, lintOn = [] }, _, invoking) => {
 
   const pkg = {
     scripts: {
-      lint: 'cross-env NODE_ENV=production jslib-service lint'
+      lint: 'jslib-service lint'
     },
     eslintConfig,
     // TODO:
@@ -19,7 +19,8 @@ module.exports = (api, { config, lintOn = [] }, _, invoking) => {
     // in order to keep compatibility with v3.0.x users who defaults to ESlint v4.
     devDependencies: {
       'babel-eslint': '^10.0.1',
-      'eslint': '^5.15.0'
+      'eslint': '^5.16.0',
+      'eslint-plugin-promise': '^4.1.1'
     }
   }
 
@@ -71,7 +72,7 @@ module.exports = (api, { config, lintOn = [] }, _, invoking) => {
 
   if (lintOn.includes('commit')) {
     Object.assign(pkg.devDependencies, {
-      "husky": "^1.3.1",
+      'husky': '^1.3.1',
       'lint-staged': '^8.1.5'
     })
     if (pkg.husky && pkg.husky.hooks) {
@@ -81,7 +82,7 @@ module.exports = (api, { config, lintOn = [] }, _, invoking) => {
         'pre-commit': 'lint-staged'
       })
     }
-    pkg['lint-staged'] =  api.hasPlugin('typescript')
+    pkg['lint-staged'] = api.hasPlugin('typescript')
       ? { '*.{ts, tsx}': ['jslib-service lint --fix', 'git add'] }
       : { '*.{js, jsx}': ['jslib-service lint --fix', 'git add'] }
   }
@@ -117,7 +118,8 @@ const applyTS = module.exports.applyTS = api => {
     eslintConfig: {
       extends: ['plugin:@typescript-eslint/recommended'],
       parserOptions: {
-        parser: '@typescript-eslint/parser'
+        parser: '@typescript-eslint/parser',
+        project: './tsconfig.json'
       },
       plugins: ['@typescript-eslint']
     },

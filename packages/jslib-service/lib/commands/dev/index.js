@@ -15,11 +15,9 @@ module.exports = (api, options) => {
       '--entry': `specify entry point (default: src/index.${srcType})`,
       '--dest': `specify output directory (default: ${options.outputDir})`,
       '--formats': `list of output formats for library builds (default: ${options.formats.join(',')})`,
-      '--name': `name for umd bundle (default: "name" in package.json or entry filename)`,
+      '--name': `name for umd bundle (default: "name" in package.json or entry filename)`
     }
   }, async function dev (args) {
-    const fs = require('fs')
-    const path = require('path')
     const debug = require('debug')
     const chalk = require('chalk')
     const rollup = require('rollup')
@@ -35,11 +33,13 @@ module.exports = (api, options) => {
       formatToDev = args.formats[0] ? args.formats[0].replace(/[\-\.]min/, '') : 'umd'
     }
 
-    debug('jslib-service: dev format')(formatToDev)
+    debug('jslib-service:devFormat')(formatToDev)
 
     // get rollup option
     const { inputOption, outputOption } = api.service.resolveRollupConfig(formatToDev, args, api, options)
-    args.filesToShowStats= [outputOption.file]
+    debug('jslib-service:rollupInput')(inputOption)
+    debug('jslib-service:rollupOutput')(outputOption)
+    args.filesToShowStats = [outputOption.file]
 
     // rollup watch mode options
     const watchOption = {
@@ -65,25 +65,18 @@ module.exports = (api, options) => {
         stamp = new Date().getTime()
         clearConsole()
         info('Building for development...')
-        console.log()
-        const beforeFns = api.service.beforeFns['dev']
-        if (beforeFns && beforeFns.length) {
-          for (const beforeFn of beforeFns) {
-            await beforeFn(args)
-          }
-        }
+        log()
+
+        await api.runBeforeFns('dev', args, api, options)
       } else if (event.code === 'END') {
-        if (typeof args.errorCount === 'number' && args.errorCount > 0) {
+        if (args.hasErrorOrWarning) {
           log()
           log('  Waiting for changes...')
           return
         }
-        const afterFns = api.service.afterFns['dev']
-        if (afterFns && afterFns.length) {
-          for (const afterFn of afterFns) {
-            await afterFn(args)
-          }
-        }
+
+        await api.runAfterFns('dev', args, api, options)
+
         clearConsole()
         done(`Compiled successfully in ${new Date().getTime() - stamp}ms`)
         log()

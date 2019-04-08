@@ -1,11 +1,12 @@
 const chalk = require('chalk')
 const readline = require('readline')
+const padStart = require('string.prototype.padstart')
 
 const format = (label, msg) => {
   return msg.split('\n').map((line, i) => {
     return i === 0
       ? `${label} ${line}`
-      : line
+      : padStart(line, chalk.reset(label).length)
   }).join('\n')
 }
 
@@ -15,27 +16,26 @@ exports.log = (msg = '', tag = null) => {
   tag ? console.log(format(chalkTag(tag), msg)) : console.log(msg)
 }
 
-exports.info = (msg = '', tag = null) => {
-  const chalkMsg = format(chalk.bgBlue.black(' INFO ') + (tag ? chalkTag(tag) : ''), msg)
-  console.log(chalkMsg)
+exports.info = (msg, tag = null) => {
+  console.log(format(chalk.bgBlue.black(' INFO ') + (tag ? chalkTag(tag) : ''), msg))
 }
 
-exports.done = (msg = '', tag = null) => {
-  const chalkMsg = format(chalk.bgGreen.black(' DONE ') + (tag ? chalkTag(tag) : ''), msg)
-  console.log(chalkMsg)
+exports.done = (msg, tag = null) => {
+  console.log(format(chalk.bgGreen.black(' DONE ') + (tag ? chalkTag(tag) : ''), msg))
 }
 
-exports.warn = (msg = '', tag = null) => {
-  const chalkMsg = format(chalk.bgYellow.black(' WARN ') + (tag ? chalkTag(tag) : ''), msg)
-  console.log(chalkMsg)
+exports.warn = (msg, tag = null) => {
+  console.warn(format(chalk.bgYellow.black(' WARN ') + (tag ? chalkTag(tag) : ''), chalk.yellow(msg)))
 }
 
-exports.error = (msg = '', tag = null) => {
-  const chalkMsg = format(chalk.bgRed.black(' ERROR ') + (tag ? chalkTag(tag) : ''), msg)
-  console.log(chalkMsg)
+exports.error = (msg, tag = null) => {
+  console.error(format(chalk.bgRed(' ERROR ') + (tag ? chalkTag(tag) : ''), chalk.red(msg)))
+  if (msg instanceof Error) {
+    console.error(msg.stack)
+  }
 }
 
-exports.clearConsole = (title) => {
+exports.clearConsole = title => {
   if (process.stdout.isTTY) {
     const blank = '\n'.repeat(process.stdout.rows)
     console.log(blank)
@@ -45,4 +45,9 @@ exports.clearConsole = (title) => {
       console.log(title)
     }
   }
+}
+
+// silent all logs except errors during tests and keep record
+if (process.env.JSLIB_TEST) {
+  require('./_silence')('logs', exports)
 }

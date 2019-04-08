@@ -1,3 +1,4 @@
+<%_ if (!useTS) { _%>
 module.exports = {
   tags: {
     allowUnknownTags: true,
@@ -29,3 +30,4 @@ module.exports = {
     navLevel: 1
   }
 }
+<%_ } _%>

@@ -1,11 +1,10 @@
 const fs = require('fs')
 const path = require('path')
 const globby = require('globby')
-const chalk = require('chalk')
-module.exports = async function lint (args = {}, api, silent) {
+const { done, log, exit, chalk } = require('jslib-util')
+module.exports = async function lint (args = {}, api) {
   const cwd = api.resolve('.')
   const tslint = require('tslint')
-  const { info, done, error, log, clearConsole, exit } = require('jslib-util')
 
   const options = {
     fix: args['fix'] === true,
@@ -38,7 +37,7 @@ module.exports = async function lint (args = {}, api, silent) {
 
   filesToLint.forEach(file => {
     const filePath = api.resolve(file)
-    const fileContents = fs.readFileSync(filePath, "utf8")
+    const fileContents = fs.readFileSync(filePath, 'utf8')
     linter.lint(
       // append .ts so that tslint apply TS rules
       filePath,
@@ -58,7 +57,11 @@ module.exports = async function lint (args = {}, api, silent) {
   const maxWarnings = typeof args.maxWarnings === 'number' ? args.maxWarnings : Infinity
   const isErrorsExceeded = result.errorCount > maxErrors
   const isWarningsExceeded = result.warningCount > maxWarnings
-  
+
+  if (args.silent) {
+    return !!((result.warningCount || result.errorCount))
+  }
+
   if (!isErrorsExceeded && !isWarningsExceeded) {
     if (hasFixed) {
       log(`The following files have been auto-fixed:`)
@@ -72,10 +75,10 @@ module.exports = async function lint (args = {}, api, silent) {
     }
     if (result.warningCount || result.errorCount) {
       log(formatLintResult(result))
-      return result.warningCount || result.errorCount
+      return true
     } else {
       !api.service.mode && done(hasFixed ? `All lint errors auto-fixed.` : `No lint errors found!`)
-      return 0
+      return false
     }
   } else {
     log(formatLintResult(result))
@@ -89,8 +92,7 @@ module.exports = async function lint (args = {}, api, silent) {
   }
 }
 
-function formatLintResult(result) {
-
+function formatLintResult (result) {
   let resultString = '\n' + result.output + '\n'
 
   const eNum = result.errorCount || 0
@@ -99,15 +101,15 @@ function formatLintResult(result) {
     ? chalk.bold.red(`${
       (eNum ? eNum + ' error' + (eNum > 1 ? 's' : '') : '') +
       (eNum && wNum ? ' and ' : '') +
-      (wNum ? wNum + ' warning' + (wNum > 1 ? 's' : '') : '') + 
+      (wNum ? wNum + ' warning' + (wNum > 1 ? 's' : '') : '') +
       ' found.\n'
     }`)
     : ''
 
   const failNumCanBeFixed = result.failures.filter(fail => fail.fix).length
   resultString += failNumCanBeFixed
-   ? chalk.bold.red(`${failNumCanBeFixed} error${failNumCanBeFixed > 1 ? 's' : ''} potentially fixable with the \`--fix\` option.`)
-  : ''
-  
+    ? chalk.bold.red(`${failNumCanBeFixed} error${failNumCanBeFixed > 1 ? 's' : ''} potentially fixable with the \`--fix\` option.`)
+    : ''
+
   return resultString
 }

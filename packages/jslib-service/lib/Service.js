@@ -4,11 +4,13 @@ const debug = require('debug')
 const chalk = require('chalk')
 const readPkg = require('read-pkg')
 const PluginAPI = require('./PluginAPI')
-const RollupConfig = require('./RollupConfig')
+const dotenv = require('dotenv')
+const dotenvExpand = require('dotenv-expand')
 const defaultsDeep = require('lodash.defaultsdeep')
-const { warn, error } = require('jslib-util')
+const { warn, error, isPlugin, loadModule } = require('jslib-util')
 
 const { defaults, validate } = require('./options')
+const RollupConfig = require('./RollupConfig')
 
 module.exports = class Service {
   constructor (context) {
@@ -51,6 +53,13 @@ module.exports = class Service {
     this.initialized = true
     this.mode = mode
 
+    // load mode .env
+    if (mode) {
+      this.loadEnv(mode)
+    }
+    // load base .env
+    this.loadEnv()
+
     // load user config
     const userOptions = this.loadUserOptions()
     this.projectOptions = defaultsDeep(userOptions, defaults())
@@ -61,6 +70,54 @@ module.exports = class Service {
     this.plugins.forEach(({ id, apply }) => {
       apply(new PluginAPI(id, this), this.projectOptions)
     })
+
+    // apply rollup configs from project config file
+    if (this.projectOptions.changeRollup) {
+      this.rollupChangeFns.push(this.projectOptions.changeRollup)
+    }
+  }
+
+  loadEnv (mode) {
+    const logger = debug('jslib:env')
+    const basePath = path.resolve(this.context, `.env${mode ? `.${mode}` : ``}`)
+    const localPath = `${basePath}.local`
+
+    const load = path => {
+      try {
+        const env = dotenv.config({ path, debug: process.env.DEBUG })
+        dotenvExpand(env)
+        logger(path, env)
+      } catch (err) {
+        // only ignore error if file is not found
+        if (err.toString().indexOf('ENOENT') < 0) {
+          error(err)
+        }
+      }
+    }
+
+    load(localPath)
+    load(basePath)
+
+    // by default, NODE_ENV and BABEL_ENV are set to "development" unless mode
+    // is production or test. However the value in .env files will take higher
+    // priority.
+    if (mode) {
+      // always set NODE_ENV during tests
+      // as that is necessary for tests to not be affected by each other
+      const shouldForceDefaultEnv = (
+        process.env.JSLIB_TEST &&
+        !process.env.JSLIB_TEST_TESTING_ENV
+      )
+      const defaultNodeEnv = (mode === 'production' || mode === 'test')
+        ? mode
+        : 'development'
+      if (shouldForceDefaultEnv || process.env.NODE_ENV == null) {
+        process.env.NODE_ENV = defaultNodeEnv
+      }
+      if (shouldForceDefaultEnv || process.env.BABEL_ENV == null) {
+        process.env.BABEL_ENV = defaultNodeEnv
+      }
+    }
   }
 
   resolvePlugins () {
@@ -74,16 +131,26 @@ module.exports = class Service {
     const builtInPlugins = [
       './commands/dev',
       './commands/build',
-      './commands/help',
+      './commands/help'
     ].map(idToPlugin)
 
-    const pluginRE = /jslib-plugin-/
-    const isPlugin = id => pluginRE.test(id)
     const projectPlugins = Object.keys(this.pkg.devDependencies || {})
       .concat(Object.keys(this.pkg.dependencies || {}))
       .filter(isPlugin)
       .map(id => idToPlugin(id))
     plugins = builtInPlugins.concat(projectPlugins)
+
+    // Local plugins
+    if (this.pkg.jslibPlugins && this.pkg.jslibPlugins.service) {
+      const files = this.pkg.jslibPlugins.service
+      if (!Array.isArray(files)) {
+        throw new Error(`Invalid type for option 'jslibPlugins.service', expected 'array' but got ${typeof files}.`)
+      }
+      plugins = plugins.concat(files.map(file => ({
+        id: `local:${file}`,
+        apply: loadModule(file, this.pkgContext)
+      })))
+    }
 
     return plugins
   }
@@ -108,23 +175,9 @@ module.exports = class Service {
     } else {
       args._.shift() // remove command itself
     }
-    
+
     const { fn } = command
-    if (name === 'dev') {
-      return fn(args)
-    }
-    if (this.beforeFns[name] && this.beforeFns[name].length) {
-      for (const beforeFn of this.beforeFns[name]) {
-        await beforeFn(args)
-      }
-    }
-    const result = await fn(args)
-    if (this.afterFns[name] && this.afterFns[name].length) {
-      for (const afterFn of this.afterFns[name]) {
-        await afterFn(args)
-      }
-    }
-    return result
+    return fn(args)
   }
 
   loadUserOptions () {
@@ -190,23 +243,13 @@ module.exports = class Service {
     return resolved
   }
 
-  resolveRollupConfig(format = 'umd', args = {}, api = {}, options = {}) {
-    let rollupConfig = new RollupConfig(format, args, api, options)
+  resolveRollupConfig (format = 'umd', args = {}, api = {}, options = {}) {
+    const rollupConfig = new RollupConfig(format, args, api, options)
     this.rollupChangeFns.forEach(fn => fn(rollupConfig))
     return {
       inputOption: rollupConfig.getInputOption(),
       outputOption: rollupConfig.getOutputOption()
     }
-  }
-}
-
-function ensureSlash (config, key) {
-  let val = config[key]
-  if (typeof val === 'string') {
-    if (!/^https?:/.test(val)) {
-      val = val.replace(/^([^/.])/, '/$1')
-    }
-    config[key] = val.replace(/([^/])$/, '$1/')
   }
 }
 

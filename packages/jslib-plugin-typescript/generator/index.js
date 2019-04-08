@@ -8,14 +8,14 @@ module.exports = (api, {
 
   api.extendPackage({
     devDependencies: {
-      typescript: '^3.3.3333'
+      typescript: '^3.4.1'
     }
   })
 
   if (tsLint) {
     const pkg = {
       scripts: {
-        lint: 'cross-env NODE_ENV=production jslib-service lint'
+        lint: 'jslib-service lint'
       }
     }
 
@@ -27,7 +27,7 @@ module.exports = (api, {
 
     if (lintOn.includes('commit')) {
       Object.assign(pkg.devDependencies, {
-        "husky": "^1.3.1",
+        'husky': '^1.3.1',
         'lint-staged': '^8.1.5'
       })
       if (pkg.husky && pkg.husky.hooks) {
@@ -37,7 +37,7 @@ module.exports = (api, {
           'pre-commit': 'lint-staged'
         })
       }
-      pkg['lint-staged'] =  { '*.{ts, tsx}': ['jslib-service lint --fix', 'git add'] }
+      pkg['lint-staged'] = { '*.{ts, tsx}': ['jslib-service lint --fix', 'git add'] }
     }
 
     api.extendPackage(pkg)

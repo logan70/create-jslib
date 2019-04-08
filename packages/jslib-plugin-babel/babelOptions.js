@@ -12,7 +12,7 @@ exports.config = api => {
           modules: false,
           // 按需进行polyfill
           useBuiltIns: 'usage',
-          corejs: '3.0.0',
+          corejs: '3.0.0'
         }
       ]
     ],

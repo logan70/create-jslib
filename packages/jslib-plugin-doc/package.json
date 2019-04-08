@@ -5,10 +5,8 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/logan70/jslib-plugin-babel.git"
-  },
-  "scripts": {
-    "release": "standard-version -t jslib-plugin-doc@"
+    "url": "git+https://github.com/logan70/create-jslib.git",
+    "directory": "packages/jslib-plugin-doc"
   },
   "keywords": [
     "jslib",
@@ -25,12 +23,10 @@
     "jslib-util": "^1.1.0"
   },
   "devDependencies": {
+    "docdash": "^1.1.0",
     "jsdoc": "^3.5.5",
-    "docdash": "^1.0.3",
     "typedoc": "^0.14.2",
-    "typedoc-plugin-external-module-name": "^2.0.0",
-    "standard-version": "^5.0.2",
-    "rimraf": "^2.6.3"
+    "typedoc-plugin-external-module-name": "^2.0.0"
   },
   "engines": {
     "node": ">=8.9"

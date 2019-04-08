@@ -1,11 +1,10 @@
-const path = require('path')
 const lint = require('./lib/tslint')
 const { logWithSpinner, stopSpinner, log } = require('jslib-util')
 
 module.exports = (api, options) => {
   const typeScript = require('rollup-plugin-typescript2')
   const tsPlugin = typeScript({
-    exclude: [ 'node_modules/**', '*.d.ts', '**/*.d.ts' ]
+    exclude: ['node_modules/**', '*.d.ts', '**/*.d.ts']
   })
   api.changeRollup((rollupConfig) => {
     rollupConfig.unshiftPlugin(tsPlugin)
@@ -19,9 +18,9 @@ module.exports = (api, options) => {
         await lint(args, api)
         stopSpinner()
       })
-  
+
       api.addBeforeFn('dev', async (args) => {
-        args.errorCount = await lint(Object.assign({}, args, { maxErrors: Infinity, maxWarnings: Infinity}), api)
+        args.hasErrorOrWarning = await lint(Object.assign({}, args, { maxErrors: Infinity, maxWarnings: Infinity }), api)
       })
     }
     api.registerCommand('lint', {

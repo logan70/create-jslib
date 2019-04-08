@@ -25,17 +25,14 @@ module.exports = (api, options) => {
   })
 }
 
-async function build (args, api, options) {
+function build (args, api, options) {
   const fs = require('fs-extra')
   const debug = require('debug')
-  const path = require('path')
-  const chalk = require('chalk')
   const rollup = require('rollup')
   const formatStats = require('../../util/formatStats')
   const {
     log,
     done,
-    info,
     logWithSpinner,
     clearConsole,
     stopSpinner
@@ -43,15 +40,16 @@ async function build (args, api, options) {
   const startTime = new Date().getTime()
 
   return new Promise(async (resolve, reject) => {
+    await api.runBeforeFns('build', args, api, options)
 
     log()
-  
+
     const targetDir = api.resolve(args.dest || options.outputDir)
-  
+
     if (args.clean && !args.noClean) {
       await fs.remove(targetDir)
     }
-  
+
     args.formats = args.formats ? args.formats.split(',') : options.formats
     debug('jslib-service: build formats')(args.formats)
 
@@ -73,12 +71,14 @@ async function build (args, api, options) {
       })
     }))
 
+    await api.runAfterFns('build', args, api, options)
+
     const endTime = new Date().getTime()
     stopSpinner()
     clearConsole()
     done(`Compiled successfully in ${endTime - startTime}ms`)
     log()
-    
+
     // log file stats
     log(formatStats(args, api))
 

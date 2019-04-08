@@ -1,26 +1,37 @@
 const fs = require('fs')
-const path = require('path')
-const execa = require('execa')
+const { error, execa } = require('jslib-util')
 
-async function jsDoc(args, api) {
-  let destination
+async function jsDoc (args, api) {
   const configPath = args.config || api.resolve('jsdoc.config.js')
-  if (fs.existsSync(configPath)) {
-    const config = require(configPath)
-    destination = config.opts && config.opts.destination || ''
+  if (!fs.existsSync(configPath)) {
+    error('Cannot find jsdoc option file `jsdoc.config.js`')
   }
-  destination = destination || 'docs/'
+  const config = require(configPath)
+  const destination = config.opts && config.opts.destination || 'docs/'
   await execa('rimraf', [destination])
   const result = await execa('jsdoc', ['-c', configPath])
   return result
 }
 
-async function typeDoc(args, api) {
+async function typeDoc (args, api) {
+  const configPath = api.resolve(args.config || 'typedoc.json')
+  if (!fs.existsSync(configPath)) {
+    error(`Cannot find typeDoc option file '${args.config || 'typedoc.json'}'`)
+  }
+  const config = require(configPath)
+  const destination = config.out || 'docs/'
+  await execa('rimraf', [destination])
+  const result = await execa('typedoc', ['--options', configPath])
+  return result
+}
+
+// eslint-disable-next-line
+async function typeDocNode (args, api) {
   const TypeDoc = require('typedoc')
   let config
   if (args.config && fs.existsSync(api.resolve(args.config)) && /\.json$/.test(args.config)) {
-    await execa('typedoc', ['--tsconfig', args.config])
-    return
+    const result = await execa('typedoc', ['--tsconfig', args.config])
+    return result
   } else if (args.config && fs.existsSync(api.resolve(args.config)) && /\.js$/.test(args.config)) {
     config = require(api.resolve(args.config))
   } else {

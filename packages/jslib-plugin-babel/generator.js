@@ -4,13 +4,13 @@ module.exports = api => {
   const pkg = {
     babel,
     devDependencies: {
-      '@babel/core': '^7.3.4',
-      '@babel/plugin-transform-runtime': '^7.3.4',
-      '@babel/preset-env': '^7.3.4'
+      '@babel/core': '^7.4.3',
+      '@babel/plugin-transform-runtime': '^7.4.3',
+      '@babel/preset-env': '^7.4.3'
     },
     dependencies: {
-      '@babel/runtime': '^7.3.4',
-      '@babel/polyfill': '^7.2.5',
+      '@babel/runtime': '^7.4.3',
+      '@babel/polyfill': '^7.4.3',
       'core-js': '^3.0.0'
     }
   }
@@ -37,7 +37,7 @@ module.exports = api => {
               modules: 'commonjs',
               debug: false
             }
-          ],
+          ]
         ]
       }
     }

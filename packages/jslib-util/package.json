@@ -5,10 +5,8 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/logan70/jslib-util.git"
-  },
-  "scripts": {
-    "release": "standard-version"
+    "url": "git+https://github.com/logan70/create-jslib.git",
+    "directory": "packages/jslib-util"
   },
   "keywords": [
     "jslib",
@@ -20,20 +18,18 @@
   "bugs": {
     "url": "https://github.com/logan70/create-jslib/issues"
   },
-  "homepage": "https://github.com/logan70/jslib-util#readme",
+  "homepage": "https://github.com/logan70/create-jslib/tree/master/packages/jslib-util#readme",
   "dependencies": {
     "chalk": "^2.4.2",
     "execa": "^1.0.0",
     "joi": "^14.3.1",
     "launch-editor": "^2.2.1",
     "lru-cache": "^5.1.1",
-    "ora": "^3.2.0",
+    "ora": "^3.4.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "semver": "^5.6.0"
-  },
-  "devDependencies": {
-    "standard-version": "^5.0.2"
+    "semver": "^6.0.0",
+    "string.prototype.padstart": "^3.0.0"
   },
   "engines": {
     "node": ">=8.9"

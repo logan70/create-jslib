@@ -5,10 +5,8 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/logan70/jslib-plugin-eslint.git"
-  },
-  "scripts": {
-    "release": "standard-version -t jslib-plugin-eslint@"
+    "url": "git+https://github.com/logan70/create-jslib.git",
+    "directory": "packages/@vue/cli-plugin-eslint"
   },
   "keywords": [
     "jslib",
@@ -20,16 +18,22 @@
   "bugs": {
     "url": "https://github.com/logan70/create-jslib/issues"
   },
-  "homepage": "https://github.com/logan70/jslib-plugin-eslint#readme",
+  "homepage": "https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-eslint#readme",
   "dependencies": {
     "babel-eslint": "^10.0.1",
-    "eslint": "^5.15.1",
-    "globby": "^9.1.0",
-    "jslib-util": "^1.1.0",
-    "rollup-plugin-eslint": "^5.0.0"
+    "eslint": "^5.16.0",
+    "globby": "^9.2.0",
+    "jslib-util": "latest",
+    "eslint-plugin-promise": "^4.1.1",
+    "rollup-plugin-eslint": "^5.1.0"
   },
   "devDependencies": {
-    "standard-version": "^5.0.2"
+    "@typescript-eslint/eslint-plugin": "^1.6.0",
+    "@typescript-eslint/parser": "^1.6.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0"
   },
   "engines": {
     "node": ">=8.9"

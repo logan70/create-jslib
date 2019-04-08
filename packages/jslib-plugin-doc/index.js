@@ -1,16 +1,16 @@
 const { logWithSpinner, stopSpinner, log } = require('jslib-util')
-const doc = require('./doc')
+const generateDoc = require('./doc')
 
 module.exports = (api, options) => {
-  api.addBeforeFn('build', async (args) => {
+  api.addAfterFn('build', async (args) => {
     logWithSpinner('Generating documentation...')
     log('\n')
-    await doc(args, api)
+    await generateDoc(args, api)
     stopSpinner()
   })
 
-  api.addBeforeFn('dev', async (args) => {
-    await doc(args, api)
+  api.addAfterFn('dev', async (args) => {
+    await generateDoc(args, api)
   })
 
   const details = api.hasPlugin('typescript') ? 'https://typedoc.org' : 'http://usejsdoc.org'
@@ -23,6 +23,6 @@ module.exports = (api, options) => {
     },
     details: details
   }, args => {
-    return doc(args, api)
+    return generateDoc(args, api)
   })
 }

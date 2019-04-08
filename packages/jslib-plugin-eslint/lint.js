@@ -92,6 +92,10 @@ module.exports = async function lint (args = {}, api) {
   const isErrorsExceeded = report.errorCount > maxErrors
   const isWarningsExceeded = report.warningCount > maxWarnings
 
+  if (args.silent) {
+    return report.warningCount + report.errorCount > 0
+  }
+
   if (!isErrorsExceeded && !isWarningsExceeded) {
     if (!args.silent) {
       const hasFixed = report.results.some(f => f.output)
@@ -105,12 +109,13 @@ module.exports = async function lint (args = {}, api) {
         })
         log()
       }
+      log()
       if (report.warningCount || report.errorCount) {
         console.log(formatter(report.results))
-        return report.warningCount || report.errorCount
+        return true
       } else {
         !api.service.mode && done(hasFixed ? `All lint errors auto-fixed.` : `No lint errors found!`)
-        return 0
+        return false
       }
     }
   } else {

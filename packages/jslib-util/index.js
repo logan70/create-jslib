@@ -1,8 +1,17 @@
-const fs = require('fs')
-const path = require('path')
-
-const filesToExport = fs.readdirSync(path.resolve(__dirname, './lib'))
-
-filesToExport.forEach((file) => {
-  Object.assign(exports, require(path.resolve(__dirname, './lib', file)))
+[
+  'env',
+  'exit',
+  'launch',
+  'logger',
+  'module',
+  'object',
+  'pluginResolution',
+  'request',
+  'spinner',
+  'validate'
+].forEach(m => {
+  Object.assign(exports, require(`./lib/${m}`))
 })
+
+exports.chalk = require('chalk')
+exports.execa = require('execa')
