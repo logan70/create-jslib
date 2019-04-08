@@ -80,10 +80,9 @@ const release = async () => {
 
     try {
       await execa('git', ['add', '-A'], { stdio: 'inherit' })
-      await execa('git', ['commit', '-m', '"chore: pre release sync"'], { stdio: 'inherit' })
+      await execa('git', ['commit', '-m', 'chore: pre release sync'], { stdio: 'inherit' })
     } catch (e) {
       // if it's a patch release, there may be no local deps to sync
-      console.error(e)
     }
   }
 
