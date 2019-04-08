@@ -6,7 +6,7 @@ const cc = require('conventional-changelog')
 function genNewRelease (version) {
   return new Promise(resolve => {
     const newReleaseStream = cc({
-      releaseCount: 1,
+      releaseCount: 2,
       pkg: {
         transform (pkg) {
           pkg.version = `v${version}`
@@ -28,7 +28,6 @@ const gen = (module.exports = async version => {
   const changelogPath = path.resolve(__dirname, '../CHANGELOG.md')
 
   const newChangelog = newRelease + fs.readFileSync(changelogPath, { encoding: 'utf8' })
-  console.log(newChangelog)
   fs.writeFileSync(changelogPath, newChangelog)
 
   delete process.env.PREFIX
