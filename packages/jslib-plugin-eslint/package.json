@@ -1,6 +1,6 @@
 {
   "name": "jslib-plugin-eslint",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "eslint plugin for create-jslib",
   "main": "index.js",
   "repository": {

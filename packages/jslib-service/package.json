@@ -1,6 +1,6 @@
 {
   "name": "jslib-service",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "local service for create-jslib projects",
   "main": "lib/Service.js",
   "typings": "types/index.d.ts",
@@ -33,7 +33,7 @@
     "execa": "^1.0.0",
     "fs-extra": "^7.0.1",
     "inquirer": "^6.2.2",
-    "jslib-util": "^2.0.0",
+    "jslib-util": "^2.0.1",
     "lodash.defaultsdeep": "^4.6.0",
     "minimist": "^1.2.0",
     "read-pkg": "^5.0.0",
