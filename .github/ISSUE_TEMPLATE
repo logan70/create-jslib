@@ -4,10 +4,9 @@ Description of the problem, as detailed as possible.
 
 ### Environment
 
-- Mobile: MI6
-- System: Android7.1.1
-- Browser：Chrome61
-- create-jslib version: 2.0.0
+- System: macOS 10.14
+- Browser: Chrome61
+- create-jslib version: 2.0.1
 - some other information
 
 ### Online demo
