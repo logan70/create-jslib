@@ -1,3 +1,14 @@
+## 2.1.0 (2019-04-10)
+
+* v2.1.0 ([1ed234e](https://github.com/logan70/create-jslib/commit/1ed234e))
+* chore: 2.0.1 changelog ([ec585cf](https://github.com/logan70/create-jslib/commit/ec585cf))
+* chore: pre release sync ([bd7e883](https://github.com/logan70/create-jslib/commit/bd7e883))
+* test: add unit test for create-jslib ([2dfa8be](https://github.com/logan70/create-jslib/commit/2dfa8be))
+* test: test utilities for create-jslib packages ([39ff82e](https://github.com/logan70/create-jslib/commit/39ff82e))
+* docs: modify issue template and contributing guide ([db6deab](https://github.com/logan70/create-jslib/commit/db6deab))
+
+
+
 ## <small>2.0.1 (2019-04-08)</small>
 
 * v2.0.0 ([61b5add](https://github.com/logan70/create-jslib/commit/61b5add))
