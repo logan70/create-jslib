@@ -1,6 +1,6 @@
 {
   "name": "jslib-version-marker",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "version marker for create-jslib",
   "author": "Logan Lee",
   "license": "MIT",

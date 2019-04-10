@@ -1,6 +1,6 @@
 {
   "name": "jslib-plugin-doc",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "documentation plugin for create-jslib",
   "main": "index.js",
   "repository": {
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/logan70/create-jslib/tree/dev/packages/jslib-plugin-doc#readme",
   "dependencies": {
-    "jslib-util": "^2.0.1"
+    "jslib-util": "^2.1.0"
   },
   "devDependencies": {
     "docdash": "^1.1.0",

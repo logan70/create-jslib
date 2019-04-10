@@ -1,6 +1,6 @@
 {
   "name": "jslib-plugin-unit-mocha",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "mocha unit testing plugin for create-jslib",
   "main": "index.js",
   "repository": {
@@ -23,7 +23,7 @@
     "@babel/register": "^7.4.0",
     "jsdom": "^14.0.0",
     "jsdom-global": "^3.0.2",
-    "jslib-util": "^2.0.1",
+    "jslib-util": "^2.1.0",
     "mocha": "^6.1.2",
     "ts-node": "^8.0.3"
   },

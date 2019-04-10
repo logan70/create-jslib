@@ -1,6 +1,6 @@
 {
   "name": "jslib-test-utils",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "test utilities for create-jslib packages",
   "repository": {
     "type": "git",
