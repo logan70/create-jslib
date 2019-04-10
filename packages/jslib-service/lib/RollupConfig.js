@@ -1,5 +1,6 @@
 const nodeResolve = require('rollup-plugin-node-resolve')
 const commonjs = require('rollup-plugin-commonjs')
+const { uglify } = require('rollup-plugin-uglify')
 
 const outputMap = {
   umd: 'index.aio.js',
@@ -7,150 +8,152 @@ const outputMap = {
   esm: 'index.esm.js'
 }
 
+const defaultString = '__default__'
+const getDefaultString = () => defaultString
+const getDefaultArr = () => [defaultString]
+const getDefaultObj = () => ({ val: defaultString })
+
+const initialInputOption = {
+  // core input options
+  external: getDefaultArr(),
+  input: getDefaultString(), // required
+  plugins: getDefaultArr(),
+
+  // advanced input options
+  cache: getDefaultString(),
+  inlineDynamicImports: getDefaultString(),
+  manualChunks: getDefaultString(),
+  onwarn: getDefaultString(),
+  preserveModules: getDefaultString(),
+
+  // danger zone
+  acorn: getDefaultString(),
+  acornInjectPlugins: getDefaultString(),
+  context: getDefaultString(),
+  moduleContext: getDefaultString(),
+  preserveSymlinks: getDefaultString(),
+  shimMissingExports: getDefaultString(),
+  treeshake: getDefaultString(),
+
+  // experimental
+  chunkGroupingSize: getDefaultString(),
+  experimentalCacheExpiry: getDefaultString(),
+  experimentalOptimizeChunks: getDefaultString(),
+  experimentalTopLevelAwait: getDefaultString(),
+  perf: getDefaultString()
+}
+
+const initialOutputOption = {
+  // core output options
+  dir: getDefaultString(),
+  file: getDefaultString(),
+  format: getDefaultString(), // required
+  globals: getDefaultObj(),
+  name: getDefaultString(),
+
+  // advanced output options
+  assetFileNames: getDefaultString(),
+  banner: getDefaultString(),
+  chunkFileNames: getDefaultString(),
+  compact: getDefaultString(),
+  entryFileNames: getDefaultString(),
+  extend: getDefaultString(),
+  footer: getDefaultString(),
+  interop: getDefaultString(),
+  intro: getDefaultString(),
+  outro: getDefaultString(),
+  paths: getDefaultObj(),
+  sourcemap: getDefaultString(),
+  sourcemapExcludeSources: getDefaultString(),
+  sourcemapFile: getDefaultString(),
+  sourcemapPathTransform: getDefaultString(),
+
+  // danger zone
+  amd: getDefaultObj(),
+  dynamicImportFunction: getDefaultString(),
+  esModule: getDefaultString(),
+  exports: getDefaultString(),
+  freeze: getDefaultString(),
+  indent: getDefaultString(),
+  namespaceToStringTag: getDefaultString(),
+  noConflict: getDefaultString(),
+  preferConst: getDefaultString(),
+  strict: getDefaultString()
+}
+
 class RollupConfig {
   constructor (format = 'umd', args = {}, api = {}, options = {}) {
-    // core input options
-    this.external = []
-    this.input = args.entry // required
-    this.plugins = [
+    this.inputOption = initialInputOption
+    this.outputOption = initialOutputOption
+
+    // modify input options
+    const srcType = 'hasPlugin' in api ? require('./util/getSrcType')(api) : 'js'
+    this.inputOption.input = args.entry || `src/index.${srcType}` // required
+    this.inputOption.plugins = [
       nodeResolve({
-        main: true,
+        mainFields: ['module', 'main'],
         extensions: ['.js']
       }),
       commonjs({
         include: 'node_modules/**'
       })
     ]
+    args.uglify && this.inputOption.plugins.push(uglify())
 
-    // advanced input options
-    this.inlineDynamicImports = undefined
-    this.manualChunks = undefined
-    this.onwarn = undefined
-    this.preserveModules = undefined
-
-    // danger zone
-    this.acorn = undefined
-    this.acornInjectPlugins = undefined
-    this.context = undefined
-    this.moduleContext = undefined
-    this.preserveSymlinks = undefined
-    this.shimMissingExports = undefined
-    this.treeshake = undefined
-
-    // experimental
-    this.chunkGroupingSize = undefined
-    this.experimentalCacheExpiry = undefined
-    this.experimentalOptimizeChunks = undefined
-    this.experimentalTopLevelAwait = undefined
-    this.perf = undefined
-
-    if (/[\-\.]min$/.test(format)) {
-      const { uglify } = require('rollup-plugin-uglify')
-      this.plugins.push(uglify())
-    }
-
-    // output options
-    this.output = {
-      // core output options
-      dir: undefined,
-      file: `${options.outputDir || 'dist'}/${outputMap[format] || 'index.' + format + '.js'}`,
-      format, // required
-      globals: {},
-      name: args.name || options.name || 'jslib',
-
-      // advanced output options
-      assetFileNames: 'assets/[name]-[hash][extname]',
-      banner: options.banner || '',
-      chunkFileNames: '[name]-[hash].js',
-      compact: false,
-      entryFileNames: '[name].js',
-      extend: false,
-      footer: options.footer || '',
-      interop: true,
-      intro: '',
-      outro: '',
-      paths: {},
-      sourcemap: process.env.NODE_ENV === 'production' ? (typeof options.productionSourceMap === 'boolean' ? options.productionSourceMap : false) : false,
-      sourcemapExcludeSources: false,
-      sourcemapFile: '',
-      sourcemapPathTransform: sourcePath => sourcePath,
-
-      // danger zone
-      amd: {},
-      dynamicImportFunction: 'import',
-      esModule: true,
-      exports: 'auto',
-      freeze: true,
-      indent: true,
-      namespaceToStringTag: false,
-      noConflict: false,
-      preferConst: false,
-      strict: true
-    }
+    // modify output options
+    this.outputOption.format = format
+    this.outputOption.name = args.name || options.name || 'jslib-demo'
+    this.outputOption.file = `${options.outputDir || 'dist'}/${outputMap[format] || 'index.' + format + '.js'}`
+    this.outputOption.banner = options.banner || this.outputOption.banner
+    this.outputOption.footer = options.footer || this.outputOption.footer
+    this.outputOption.sourcemap = process.env.NODE_ENV === 'production'
+      ? (typeof options.productionSourceMap === 'boolean' ? options.productionSourceMap : false) : true
   }
 
   getInputOption () {
-    const inputOption = {
-      // core input options
-      external: this.external,
-      input: this.input, // required
-      plugins: this.plugins,
-
-      // advanced input options
-      inlineDynamicImports: this.inlineDynamicImports,
-      manualChunks: this.manualChunks,
-      onwarn: this.onwarn,
-      preserveModules: this.preserveModules,
-
-      // danger zone
-      acorn: this.acorn,
-      acornInjectPlugins: this.acornInjectPlugins,
-      context: this.context,
-      moduleContext: this.moduleContext,
-      preserveSymlinks: this.preserveSymlinks,
-      shimMissingExports: this.shimMissingExports,
-      treeshake: this.treeshake,
-
-      // experimental
-      chunkGroupingSize: this.chunkGroupingSize,
-      experimentalCacheExpiry: this.experimentalCacheExpiry,
-      experimentalOptimizeChunks: this.experimentalOptimizeChunks,
-      experimentalTopLevelAwait: this.experimentalTopLevelAwait,
-      perf: this.perf
-    }
-    return cleanObject(inputOption)
+    const finalInputOption = cleanOption(this.inputOption)
+    return finalInputOption
   }
 
   getOutputOption () {
-    const outputOptions = Object.assign({}, this.output)
-    if (outputOptions.dir) {
-      delete outputOptions.file
+    const finalOutputOption = cleanOption(this.outputOption)
+    if (finalOutputOption.dir && finalOutputOption.file) {
+      delete finalOutputOption.file
     }
-    if (outputOptions.format !== 'esm') {
-      delete outputOptions.dynamicImportFunction
+    if (finalOutputOption.format !== 'esm' && finalOutputOption.dynamicImportFunction) {
+      delete finalOutputOption.dynamicImportFunction
     }
-    return cleanObject(outputOptions)
+    return finalOutputOption
   }
 
   pushPlugin (plugin) {
-    this.plugins.push(plugin)
+    this.inputOption.plugins.push(plugin)
   }
 
   unshiftPlugin (plugin) {
-    this.plugins.unshift(plugin)
+    this.inputOption.plugins.unshift(plugin)
   }
 }
 
 module.exports = RollupConfig
 
-function cleanObject (obj) {
+const emptyValidator = {
+  Object: obj => obj.val && obj.val === defaultString,
+  Array: arr => arr[0] && arr[0] === defaultString,
+  String: str => str === defaultString
+}
+
+function cleanOption (obj) {
   if (Object.prototype.toString.call(obj) !== '[object Object]') {
     return obj
   }
-  Object.keys(obj).forEach(key => {
-    if (obj[key] === void 0 || obj[key] === null) {
-      delete obj[key]
+  const options = Object.assign({}, obj)
+  Object.keys(options).forEach(key => {
+    const val = options[key]
+    const type = Object.prototype.toString.call(val).slice(8, -1)
+    if (emptyValidator[type] && emptyValidator[type](val)) {
+      delete options[key]
     }
   })
-  return obj
+  return options
 }

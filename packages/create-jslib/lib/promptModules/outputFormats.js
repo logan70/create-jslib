@@ -11,27 +11,32 @@ module.exports = cli => {
       short: 'umd',
       description: 'Universal Module Definition, works as amd, cjs and iife all in one',
       checked: true
-    }, {
+    },
+    {
       name: 'cjs',
       value: 'cjs',
       short: 'cjs',
       description: 'CommonJS, suitable for Node and other bundlers'
-    }, {
+    },
+    {
       name: 'esm',
       value: 'esm',
       short: 'esm',
       description: 'Keep the bundle as an ES module file, suitable for other bundlers and inclusion as a <script type=module> tag in modern browsers'
-    }, {
+    },
+    {
       name: 'iife',
       value: 'iife',
       short: 'iife',
       description: 'A self-executing function, suitable for inclusion as a <script> tag.'
-    }, {
+    },
+    {
       name: 'amd',
       value: 'amd',
       short: 'amd',
       description: 'Asynchronous Module Definition, used with module loaders like RequireJS'
-    }, {
+    },
+    {
       name: 'system',
       value: 'system',
       short: 'system',
@@ -45,8 +50,9 @@ module.exports = cli => {
       return true
     }
   })
-
   cli.onPromptComplete((answers, options) => {
-    options.formats = Array.from(new Set([...options.formats, ...answers.outputFormats]))
+    if (answers.outputFormats && answers.outputFormats.length) {
+      options.formats = options.formats ? Array.from(new Set([...options.formats, ...answers.outputFormats])) : answers.outputFormats
+    }
   })
 }

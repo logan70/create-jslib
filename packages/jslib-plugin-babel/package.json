@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-babel#readme",
   "dependencies": {
-    "jslib-util": "latest",
+    "jslib-util": "^2.0.1",
     "rollup-plugin-babel": "^4.3.2"
   },
   "devDependencies": {

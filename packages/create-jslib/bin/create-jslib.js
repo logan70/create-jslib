@@ -53,6 +53,7 @@ program
   .command('create <lib-name>')
   .description('create a new project powered by jslib-service')
   .option('-d, --default', 'Skip prompts and use default preset')
+  .option('-i, --inlinePreset <json>', 'Skip prompts and use inline JSON string as preset')
   .option('-m, --packageManager <command>', 'Use specified npm client when installing dependencies')
   .option('-r, --registry <url>', 'Use specified npm registry when installing dependencies (only for npm)')
   .option('-g, --git [message]', 'Force git initialization with initial commit message')
@@ -85,11 +86,32 @@ program
     ).then(console.log)
   })
 
+// create-jslib add typescript
+program
+  .command('add <plugin> [pluginOptions]')
+  .description('install a plugin and invoke its generator in an already created project')
+  .option('--registry <url>', 'Use specified npm registry when installing dependencies (only for npm)')
+  .allowUnknownOption()
+  .action((plugin) => {
+    require('../lib/add')(plugin, minimist(process.argv.slice(3)))
+  })
+
+// create-jslib invoke typescript
+program
+  .command('invoke <plugin> [pluginOptions]')
+  .description('invoke the generator of a plugin in an already created project')
+  .option('--registry <url>', 'Use specified npm registry when installing dependencies (only for npm)')
+  .allowUnknownOption()
+  .action((plugin) => {
+    require('../lib/invoke')(plugin, minimist(process.argv.slice(3)))
+  })
+
 // create-jslib foo
 program
   .arguments('<lib-name>')
   .description(`Run ${chalk.cyan(`create-jslib <lib-name>`)} to create a new project powered by jslib-service`)
   .option('-d, --default', 'Skip prompts and use default preset')
+  .option('-i, --inlinePreset <json>', 'Skip prompts and use inline JSON string as preset')
   .option('-m, --packageManager <command>', 'Use specified npm client when installing dependencies')
   .option('-r, --registry <url>', 'Use specified npm registry when installing dependencies (only for npm)')
   .option('-g, --git [message]', 'Force git initialization with initial commit message')
@@ -146,6 +168,9 @@ function cleanArgs (cmd) {
     // it should not be copied
     if (typeof cmd[key] !== 'function' && typeof cmd[key] !== 'undefined') {
       args[key] = cmd[key]
+    }
+    if (cmd.parent && typeof cmd.parent[key] !== 'function' && typeof cmd.parent[key] !== 'undefined') {
+      args[key] = cmd.parent[key]
     }
   })
   return args

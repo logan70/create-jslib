@@ -10,23 +10,23 @@ exports.toShortPluginId = id => id.replace(pluginRE, '')
 
 exports.resolvePluginId = id => {
   // already full id
-  // e.g. vue-cli-plugin-foo, @vue/cli-plugin-foo, @bar/vue-cli-plugin-foo
+  // e.g. jslib-cli-plugin-foo
   if (pluginRE.test(id)) {
     return id
   }
   // scoped short
-  // e.g. @vue/foo, @bar/foo
+  // e.g. @jslib/foo, @bar/foo
   if (id.charAt(0) === '@') {
     const scopeMatch = id.match(scopeRE)
     if (scopeMatch) {
       const scope = scopeMatch[0]
       const shortId = id.replace(scopeRE, '')
-      return `${scope}${scope === '@vue/' ? `` : `vue-`}cli-plugin-${shortId}`
+      return `${scope}${scope === '@jslib/' ? `` : `jslib-`}plugin-${shortId}`
     }
   }
   // default short
   // e.g. foo
-  return `vue-cli-plugin-${id}`
+  return `jslib-plugin-${id}`
 }
 
 exports.matchesPluginId = (input, full) => {
@@ -43,7 +43,7 @@ exports.matchesPluginId = (input, full) => {
 
 exports.getPluginLink = id => {
   if (officialRE.test(id)) {
-    return `https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-${
+    return `https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-${
       exports.toShortPluginId(id)
     }`
   }

@@ -3,11 +3,9 @@ const debug = require('debug')
 const GeneratorAPI = require('./GeneratorAPI')
 const sortObject = require('./util/sortObject')
 const writeFileTree = require('./util/writeFileTree')
-const inferRootOptions = require('./util/inferRootOptions')
 const normalizeFilePaths = require('./util/normalizeFilePaths')
-const injectImportsAndOptions = require('./util/injectImportsAndOptions')
 const ConfigTransform = require('./ConfigTransform')
-const { matchesPluginId } = require('./util')
+const { matchesPluginId } = require('./util/pluginResolution')
 
 const logger = require('jslib-util')
 const logTypes = {
@@ -86,14 +84,10 @@ module.exports = class Generator {
     // exit messages
     this.exitLogs = []
 
-    const cliService = plugins.find(p => p.id === 'jslib-service')
-    const rootOptions = cliService
-      ? cliService.options
-      : inferRootOptions(pkg)
     // apply generators from plugins
     plugins.forEach(({ id, apply, options }) => {
-      const api = new GeneratorAPI(id, this, options, rootOptions)
-      apply(api, options, rootOptions, invoking)
+      const api = new GeneratorAPI(id, this, options)
+      apply(api, options, invoking)
     })
   }
 
@@ -145,10 +139,10 @@ module.exports = class Generator {
         extract(key)
       }
     } else {
-      // by default, always extract jslib.config.js
-      extract('jslib')
-      // by default, always extract .eslintrc.js
-      extract('eslintConfig')
+      if (!process.env.JSLIB_TEST) {
+        // by default, always extract jslib.config.js
+        extract('jslib')
+      }
       // always extract babel.config.js as this is the only way to apply
       // project-wide configuration even to dependencies.
       // TODO: this can be removed when Babel supports root: true in package.json
@@ -202,15 +196,6 @@ module.exports = class Generator {
     // normalize file paths on windows
     // all paths are converted to use / instead of \
     normalizeFilePaths(files)
-
-    // handle imports and root option injections
-    Object.keys(files).forEach(file => {
-      files[file] = injectImportsAndOptions(
-        files[file],
-        this.imports[file],
-        this.rootOptions[file]
-      )
-    })
 
     for (const postProcess of this.postProcessFilesCbs) {
       await postProcess(files)

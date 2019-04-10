@@ -24,6 +24,11 @@ const schema = createSchema(joi => joi.object({
   // known runtime options for built-in plugins
   lintOnSave: joi.boolean(),
 
+  lintConfig: joi.object({
+    format: joi.string(),
+    fix: joi.boolean()
+  }),
+
   banner: joi.string(),
   footer: joi.string(),
   changeRollup: joi.func()
@@ -56,8 +61,10 @@ exports.defaults = () => ({
   // whether to use esLint/tsLint
   lintOnSave: true,
 
-  // lint formatter
-  lintFomatter: 'codeFrame',
+  // lint config
+  lintConfig: {
+    format: 'codeFrame'
+  },
 
   // Code to insert at top of bundle (outside wrapper)
   banner: `/*!

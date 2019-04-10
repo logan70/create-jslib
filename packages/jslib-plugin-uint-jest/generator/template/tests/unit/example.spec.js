@@ -1,16 +1,9 @@
 <%_ if (!hasTS) { _%>
 import { hello } from '../../src/index'
 
-let outputData = ''
-const storeLog = input => {
-  outputData += input
-}
-
 describe('index.js', () => {
-  it('console log `Hello world!`', () => {
-    console.log = jest.fn(storeLog)
-    hello()
-    expect(outputData).toBe('Hello world!')
+  it('should return `Hello world!`', () => {
+    expect(hello()).toBe('Hello world!')
   })
 })
 <%_ } _%>

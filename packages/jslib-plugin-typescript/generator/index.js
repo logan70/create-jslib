@@ -1,7 +1,7 @@
 module.exports = (api, {
   tsLint,
   lintOn = []
-}, _, invoking) => {
+}, invoking) => {
   if (typeof lintOn === 'string') {
     lintOn = lintOn.split(',')
   }
@@ -16,7 +16,8 @@ module.exports = (api, {
     const pkg = {
       scripts: {
         lint: 'jslib-service lint'
-      }
+      },
+      devDependencies: {}
     }
 
     if (!lintOn.includes('save')) {
@@ -34,7 +35,9 @@ module.exports = (api, {
         pkg.husky.hooks['pre-commit'] = 'lint-staged'
       } else {
         pkg.husky = Object.assign({}, pkg.husky, {
-          'pre-commit': 'lint-staged'
+          hooks: {
+            'pre-commit': 'lint-staged'
+          }
         })
       }
       pkg['lint-staged'] = { '*.{ts, tsx}': ['jslib-service lint --fix', 'git add'] }
@@ -50,6 +53,11 @@ module.exports = (api, {
 
   // late invoke compat
   if (invoking) {
+    if (api.hasPlugin('babel')) {
+      // eslint-disable-next-line node/no-extraneous-require
+      require('jslib-plugin-babel/generator').applyTS(api)
+    }
+
     if (api.hasPlugin('unit-mocha')) {
       // eslint-disable-next-line node/no-extraneous-require
       require('jslib-plugins-unit-mocha/generator').applyTS(api)
@@ -62,7 +70,7 @@ module.exports = (api, {
 
     if (api.hasPlugin('eslint')) {
       // eslint-disable-next-line node/no-extraneous-require
-      require('jslib-plugins-eslint/generator').applyTS(api)
+      require('jslib-plugin-eslint/generator').applyTS(api)
     }
   }
 

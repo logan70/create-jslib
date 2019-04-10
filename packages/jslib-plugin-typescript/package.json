@@ -21,7 +21,7 @@
   "homepage": "https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-typescript#readme",
   "dependencies": {
     "globby": "^9.2.0",
-    "jslib-util": "latest",
+    "jslib-util": "^2.0.1",
     "rollup-plugin-typescript2": "^0.20.1",
     "tslint": "^5.15.0"
   },

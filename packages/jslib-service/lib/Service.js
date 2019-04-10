@@ -13,22 +13,23 @@ const { defaults, validate } = require('./options')
 const RollupConfig = require('./RollupConfig')
 
 module.exports = class Service {
-  constructor (context) {
+  constructor (context, { plugins, pkg, inlineOptions, useBuiltIn } = {}) {
     process.JSLIB_SERVICE = this
     this.initialized = false
     this.context = context
-    this.commands = {}
+    this.inlineOptions = inlineOptions
     this.rollupChangeFns = []
     this.beforeFns = {}
     this.afterFns = {}
+    this.commands = {}
     // Folder containing the target package.json for plugins
     this.pkgContext = context
     // package.json containing the plugins
-    this.pkg = this.resolvePkg()
+    this.pkg = this.resolvePkg(pkg)
     // If there are inline plugins, they will be used instead of those
     // found in package.json.
     // for testing.
-    this.plugins = this.resolvePlugins()
+    this.plugins = this.resolvePlugins(plugins, useBuiltIn)
     // resolve the default mode to use for each command
     // this is provided by plugins as module.exports.defaultModes
     // so we can get the information without actually applying the plugin.
@@ -37,8 +38,10 @@ module.exports = class Service {
     }, {})
   }
 
-  resolvePkg (context = this.context) {
-    if (fs.existsSync(path.join(context, 'package.json'))) {
+  resolvePkg (inlinePkg, context = this.context) {
+    if (inlinePkg) {
+      return inlinePkg
+    } else if (fs.existsSync(path.join(context, 'package.json'))) {
       const pkg = readPkg.sync({ cwd: context })
       return pkg
     } else {
@@ -120,7 +123,7 @@ module.exports = class Service {
     }
   }
 
-  resolvePlugins () {
+  resolvePlugins (inlinePlugins, useBuiltIn) {
     const idToPlugin = id => ({
       id: id.replace(/^.\//, 'built-in:'),
       apply: require(id)
@@ -134,11 +137,17 @@ module.exports = class Service {
       './commands/help'
     ].map(idToPlugin)
 
-    const projectPlugins = Object.keys(this.pkg.devDependencies || {})
-      .concat(Object.keys(this.pkg.dependencies || {}))
-      .filter(isPlugin)
-      .map(id => idToPlugin(id))
-    plugins = builtInPlugins.concat(projectPlugins)
+    if (inlinePlugins) {
+      plugins = useBuiltIn !== false
+        ? builtInPlugins.concat(inlinePlugins)
+        : inlinePlugins
+    } else {
+      const projectPlugins = Object.keys(this.pkg.devDependencies || {})
+        .concat(Object.keys(this.pkg.dependencies || {}))
+        .filter(isPlugin)
+        .map(id => idToPlugin(id))
+      plugins = builtInPlugins.concat(projectPlugins)
+    }
 
     // Local plugins
     if (this.pkg.jslibPlugins && this.pkg.jslibPlugins.service) {
@@ -155,7 +164,7 @@ module.exports = class Service {
     return plugins
   }
 
-  async run (name, args = {}) {
+  async run (name, args = {}, rawArgv = []) {
     // resolve mode
     // prioritize inline --mode
     // fallback to resolved default modes from plugins or development if --watch is defined
@@ -174,10 +183,11 @@ module.exports = class Service {
       command = this.commands.help
     } else {
       args._.shift() // remove command itself
+      rawArgv.shift()
     }
 
     const { fn } = command
-    return fn(args)
+    return fn(args, rawArgv)
   }
 
   loadUserOptions () {

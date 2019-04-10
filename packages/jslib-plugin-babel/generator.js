@@ -16,15 +16,7 @@ module.exports = api => {
   }
 
   if (api.hasPlugin('typescript')) {
-    babel.overrides = [
-      {
-        presets: ['@babel/preset-typescript'],
-        test: /\.tsx?$/
-      }
-    ]
-    Object.assign(pkg.devDependencies, {
-      '@babel/preset-typescript': '^7.3.3'
-    })
+    applyTS(api)
   }
 
   if (api.hasPlugin('unit-mocha') || api.hasPlugin('unit-jest')) {
@@ -44,4 +36,20 @@ module.exports = api => {
   }
 
   api.extendPackage(pkg)
+}
+
+const applyTS = module.exports.applyTS = api => {
+  api.extendPackage({
+    babel: {
+      overrides: [
+        {
+          presets: ['@babel/preset-typescript'],
+          test: /\.tsx?$/
+        }
+      ]
+    },
+    devDependencies: {
+      '@babel/preset-typescript': '^7.3.3'
+    }
+  })
 }

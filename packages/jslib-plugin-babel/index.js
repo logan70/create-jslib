@@ -4,7 +4,7 @@ const { isWindows } = require('jslib-util')
 function genTranspileDepArray (transpileDependencies) {
   const deps = transpileDependencies.map(dep => {
     if (typeof dep === 'string') {
-      const depPath = path.join('node_modules', dep, '/')
+      const depPath = path.join('node_modules', dep, '/') + '**'
       return isWindows
         ? depPath.replace(/\\/g, '\\\\') // double escape for windows style path
         : depPath
@@ -21,7 +21,6 @@ module.exports = (api, options) => {
   const defaultFilesToCompile = ['src/**'].concat(transpileDepArray)
   const babelPlugin = babel({
     include: defaultFilesToCompile,
-    exclude: 'node_modules/**',
     runtimeHelpers: true,
     extensions: api.hasPlugin('typescript') ? ['.ts', '.tsx'] : ['.js', '.jsx']
   })

@@ -13,15 +13,15 @@ module.exports = cli => {
     type: 'list',
     message: 'Pick a unit testing solution:',
     choices: [
-      // {
-      //   name: 'Mocha + Chai',
-      //   value: 'mocha',
-      //   short: 'Mocha'
-      // },
       {
         name: 'Jest',
         value: 'jest',
         short: 'Jest'
+      },
+      {
+        name: 'Mocha + Chai',
+        value: 'mocha',
+        short: 'Mocha'
       }
     ]
   })

@@ -73,6 +73,8 @@ function build (args, api, options) {
 
     await api.runAfterFns('build', args, api, options)
 
+    process.env.JSLIB_TEST && console.log('Build complete.')
+
     const endTime = new Date().getTime()
     stopSpinner()
     clearConsole()

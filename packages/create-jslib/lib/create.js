@@ -4,6 +4,7 @@ const chalk = require('chalk')
 const inquirer = require('inquirer')
 const Creator = require('./Creator')
 const { clearConsole } = require('./util/clearConsole')
+const { getPromptModules } = require('./util/createTools')
 const { error, stopSpinner, exit } = require('jslib-util')
 const validateProjectName = require('validate-npm-package-name')
 
@@ -62,7 +63,7 @@ async function create (projectName, options) {
     }
   }
 
-  const creator = new Creator(name, targetDir)
+  const creator = new Creator(name, targetDir, getPromptModules())
   await creator.create(options)
 }
 
@@ -70,7 +71,6 @@ module.exports = (...args) => {
   return create(...args).catch(err => {
     stopSpinner(false) // do not persist
     error(err)
-    console.log(err)
     if (!process.env.JSLIB_TEST) {
       process.exit(1)
     }

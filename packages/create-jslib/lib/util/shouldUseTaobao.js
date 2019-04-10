@@ -5,7 +5,7 @@ const inquirer = require('inquirer')
 const registries = require('./registries')
 
 async function ping (registry) {
-  await request.get(`${registry}/vue-cli-version-marker/latest`)
+  await request.get(`${registry}/jslib-version-marker/latest`)
   return registry
 }
 

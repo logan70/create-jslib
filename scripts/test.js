@@ -5,7 +5,7 @@ const args = minimist(rawArgs)
 let regex
 if (args.p) {
   const packages = (args.p || args.package).split(',').join('|')
-  regex = `.*(${packages}|jslib-plugin-(${packages})|jslib-(${packages}))/.*\\.spec\\.js$`
+  regex = `.*packages/(${packages}|jslib-plugin-(${packages})|jslib-(${packages}))/.*\\.spec\\.js$`
   const i = rawArgs.indexOf('-p')
   rawArgs.splice(i, 2)
 }

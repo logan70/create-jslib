@@ -15,7 +15,8 @@ if (!semver.satisfies(process.version, requiredVersion)) {
 const Service = require('../lib/Service.js')
 const service = new Service(process.env.JSLIB_CONTEXT || process.cwd())
 
-const args = require('minimist')(process.argv.slice(2), {
+const rawArgv = process.argv.slice(2)
+const args = require('minimist')(rawArgv, {
   boolean: [
     // build
     // 'no-clean',
@@ -24,7 +25,7 @@ const args = require('minimist')(process.argv.slice(2), {
 })
 const command = args._[0]
 
-service.run(command, args).catch(err => {
+service.run(command, args, rawArgv).catch(err => {
   error(err)
   process.exit(1)
 })

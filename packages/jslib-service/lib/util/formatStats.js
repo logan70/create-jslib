@@ -53,6 +53,5 @@ module.exports = (args = {}, api) => {
       asset.gzippedSize
     )).join(`\n`)
   )
-  console.log(`${ui.toString()}\n\n  ${chalk.gray(`Only JavaScript bundles included.`)}\n`)
-  return
+  return (`${ui.toString()}\n\n  ${chalk.gray(`Only JavaScript bundles included.`)}\n`)
 }

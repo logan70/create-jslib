@@ -1,7 +1,6 @@
 [
   'env',
   'exit',
-  'launch',
   'logger',
   'module',
   'object',

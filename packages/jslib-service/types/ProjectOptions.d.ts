@@ -6,7 +6,7 @@ export interface ProjectOptions {
   productionSourceMap?: boolean;
 
   lintOnSave?: boolean;
-  lintFomatter?: string;
+  lintConfig?: object;
   banner?: string;
   footer?: string;
 

@@ -14,7 +14,7 @@ module.exports = {
     }],
     "node/no-extraneous-require": ["error", {
       "allowModules": [
-        "jslib-util"
+        "jslib-test-utils"
       ]
     }],
   },

@@ -13,7 +13,7 @@ function deleteRemovedFiles (directory, newFiles, previousFiles) {
 }
 
 module.exports = async function writeFileTree (dir, files, previousFiles) {
-  if (process.env.VUE_CLI_SKIP_WRITE) {
+  if (process.env.JSLIB_SKIP_WRITE) {
     return
   }
   if (previousFiles) {

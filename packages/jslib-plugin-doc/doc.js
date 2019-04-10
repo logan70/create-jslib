@@ -13,7 +13,7 @@ async function jsDoc (args, api) {
   return result
 }
 
-async function typeDoc (args, api) {
+async function typeDocExec (args, api) {
   const configPath = api.resolve(args.config || 'typedoc.json')
   if (!fs.existsSync(configPath)) {
     error(`Cannot find typeDoc option file '${args.config || 'typedoc.json'}'`)
@@ -25,8 +25,7 @@ async function typeDoc (args, api) {
   return result
 }
 
-// eslint-disable-next-line
-async function typeDocNode (args, api) {
+async function typeDoc (args, api) {
   const TypeDoc = require('typedoc')
   let config
   if (args.config && fs.existsSync(api.resolve(args.config)) && /\.json$/.test(args.config)) {
@@ -41,7 +40,8 @@ async function typeDocNode (args, api) {
   const app = new TypeDoc.Application(config)
   const project = app.convert(app.expandInputFiles(config.include || ['src']))
   if (!project) {
-    return
+    const result = await typeDocExec(args, api)
+    return result
   }
   await execa('rimraf', [config.outputDir || 'docs/'])
   const result = await app.generateDocs(project, config.outputDir || 'docs/')

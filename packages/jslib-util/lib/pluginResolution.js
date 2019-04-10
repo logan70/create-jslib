@@ -43,7 +43,7 @@ exports.matchesPluginId = (input, full) => {
 
 exports.getPluginLink = id => {
   if (officialRE.test(id)) {
-    return `https://github.com/vuejs/vue-cli/tree/packages/packages/jslib/plugin-${
+    return `https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-${
       exports.toShortPluginId(id)
     }`
   }

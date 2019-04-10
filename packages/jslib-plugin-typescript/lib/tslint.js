@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const globby = require('globby')
-const { done, log, exit, chalk } = require('jslib-util')
+const { done, log, exit, chalk, warn } = require('jslib-util')
 module.exports = async function lint (args = {}, api) {
   const cwd = api.resolve('.')
   const tslint = require('tslint')
@@ -18,6 +18,12 @@ module.exports = async function lint (args = {}, api) {
   const tslintConfigPath = tslint.Configuration.CONFIG_FILENAMES
     .map(filename => api.resolve(filename))
     .find(file => fs.existsSync(file))
+
+  // no tslint config file
+  if (!tslintConfigPath) {
+    warn(`No tslint config file exist.`)
+    return false
+  }
 
   const config = tslint.Configuration.findConfiguration(tslintConfigPath).results
 
@@ -46,10 +52,6 @@ module.exports = async function lint (args = {}, api) {
     )
   })
 
-  if (args.slient === true) {
-    return
-  }
-
   const result = linter.getResult()
 
   const hasFixed = result.fixes.length > 0
@@ -59,7 +61,7 @@ module.exports = async function lint (args = {}, api) {
   const isWarningsExceeded = result.warningCount > maxWarnings
 
   if (args.silent) {
-    return !!((result.warningCount || result.errorCount))
+    return result.warningCount + result.errorCount > 0
   }
 
   if (!isErrorsExceeded && !isWarningsExceeded) {

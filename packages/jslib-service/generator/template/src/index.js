@@ -3,13 +3,13 @@
 /**
  * @description Hello world!
  * @method hello
- * @return
+ * @returns {String} `Hello world!` string.
  * @example
- * hello() // output: Hello world!
+ * const helloStr = hello() // 'Hello world!'
  */
 <%_ } _%>
 export function hello() {
-  console.log('Hello world!')
+  return 'Hello world!'
 }
 
 <%_ if (doesCompile) { _%>

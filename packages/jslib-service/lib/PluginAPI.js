@@ -9,7 +9,7 @@ const { matchesPluginId } = require('jslib-util')
 class PluginAPI {
   /**
    * @param {string} id - Id of the plugin.
-   * @param {Service} service - A vue-cli-service instance.
+   * @param {Service} service - A jslib-service instance.
    */
   constructor (id, service) {
     this.id = id
@@ -36,7 +36,7 @@ class PluginAPI {
   /**
    * Check if the project has a given plugin.
    *
-   * @param {string} id - Plugin id, can omit the (@vue/|vue-|@scope/vue)-cli-plugin- prefix
+   * @param {string} id - Plugin id, can omit the jslib-plugin- prefix
    * @return {boolean}
    */
   hasPlugin (id) {

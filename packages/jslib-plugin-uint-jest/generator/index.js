@@ -1,4 +1,4 @@
-module.exports = (api, _, __, invoking) => {
+module.exports = (api, _, invoking) => {
   api.render('./template', {
     hasTS: api.hasPlugin('typescript')
   })
@@ -94,6 +94,22 @@ const applyTS = module.exports.applyTS = (api, invoking) => {
       devDependencies: {
         '@types/jest': '^24.0.11',
         'ts-jest': '^24.0.2'
+      }
+    })
+  }
+  // inject jest type to tsconfig.json
+  if (invoking) {
+    api.render(files => {
+      const tsconfig = files['tsconfig.json']
+      if (tsconfig) {
+        const parsed = JSON.parse(tsconfig)
+        if (
+          parsed.compilerOptions.types &&
+          !parsed.compilerOptions.types.includes('jest')
+        ) {
+          parsed.compilerOptions.types.push('jest')
+        }
+        files['tsconfig.json'] = JSON.stringify(parsed, null, 2)
       }
     })
   }

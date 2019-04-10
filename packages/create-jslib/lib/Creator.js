@@ -4,17 +4,19 @@ const debug = require('debug')
 const chalk = require('chalk')
 const execa = require('execa')
 const inquirer = require('inquirer')
-const Prompter = require('./Prompter')
 const Generator = require('./Generator')
 const cloneDeep = require('lodash.clonedeep')
 const sortObject = require('./util/sortObject')
 const { installDeps } = require('./util/installDeps')
 const writeFileTree = require('./util/writeFileTree')
 const generateReadme = require('./util/generateReadme')
-const { clearConsole } = require('./util')
+const { clearConsole } = require('./util/clearConsole')
+const PromptModuleAPI = require('./PromptModuleAPI')
 const {
   log,
+  error,
   warn,
+  exit,
   hasGit,
   hasProjectGit,
   hasYarn,
@@ -28,14 +30,26 @@ const {
   validatePreset
 } = require('./options')
 
+const isManualMode = answers => answers.preset === '__manual__'
+
 module.exports = class Creator {
-  constructor (name, context) {
+  constructor (name, context, promptModules) {
     this.name = name
     this.context = process.env.JSLIB_CONTEXT = context
-    this.prompter = new Prompter()
+    const { presetPrompt, featurePrompt } = this.resolveIntroPrompts()
+    this.presetPrompt = presetPrompt
+    this.featurePrompt = featurePrompt
+    this.outroPrompts = this.resolveOutroPrompts()
+    this.injectedPrompts = []
+    this.promptCompleteCbs = []
     this.createCompleteCbs = []
 
+    this.packageManager = hasYarn() ? 'yarn' : 'npm'
+
     this.run = this.run.bind(this)
+
+    const promptAPI = new PromptModuleAPI(this)
+    promptModules.forEach(m => m(promptAPI))
   }
 
   async create (cliOptions = {}, preset = null) {
@@ -46,6 +60,14 @@ module.exports = class Creator {
       if (cliOptions.default) {
         // create-jslib create foo --default
         preset = defaultPreset
+      } else if (cliOptions.inlinePreset) {
+        // create-jslib create foo --inlinePreset {...}
+        try {
+          preset = JSON.parse(cliOptions.inlinePreset)
+        } catch (e) {
+          error(`CLI inline preset is not valid JSON: ${cliOptions.inlinePreset}`)
+          exit(1)
+        }
       } else {
         preset = await this.promptAndResolvePreset()
       }
@@ -60,10 +82,8 @@ module.exports = class Creator {
 
     const packageManager = (
       cliOptions.packageManager ||
-      preset.packageManager ||
-      (hasYarn() ? 'yarn' : 'npm')
+      this.packageManager
     )
-    preset.packageManager && delete preset.packageManager
     debug('create-jslib:preset')(preset)
 
     logWithSpinner(`✨`, `Creating project in ${chalk.yellow(context)}.`)
@@ -89,7 +109,7 @@ module.exports = class Creator {
     })
 
     // intilaize git repository before installing deps
-    // so that vue-cli-service can setup git hooks.
+    // so that jslib-service can setup git hooks.
     const shouldInitGit = this.shouldInitGit(cliOptions)
     if (shouldInitGit) {
       logWithSpinner(`🗃`, `Initializing git repository...`)
@@ -184,7 +204,7 @@ module.exports = class Creator {
     // prompt
     if (!answers) {
       await clearConsole()
-      const prompts = this.prompter.resolveFinalPrompts()
+      const prompts = this.resolveFinalPrompts()
       debug('create-jslib:prompts')(prompts)
       answers = await inquirer.prompt(prompts)
     }
@@ -197,17 +217,14 @@ module.exports = class Creator {
       // manual
       preset = {
         useConfigFiles: answers.useConfigFiles === 'files',
-        plugins: {},
-        formats: ['umd']
+        plugins: {}
       }
       answers.features = answers.features || []
       // run cb registered by prompt modules to finalize the preset
-      this.prompter.promptCompleteCbs.forEach(cb => cb(answers, preset))
+      this.promptCompleteCbs.forEach(cb => cb(answers, preset))
     }
 
-    if (answers.packageManager) {
-      preset.packageManager = answers.packageManager
-    }
+    this.packageManager = answers.packageManager || this.packageManager
 
     // validate
     validatePreset(preset)
@@ -234,6 +251,93 @@ module.exports = class Creator {
       plugins.push({ id, apply, options })
     }
     return plugins
+  }
+
+  resolveIntroPrompts () {
+    const presetPrompt = {
+      name: 'preset',
+      type: 'list',
+      message: `Please pick a preset:`,
+      choices: [
+        {
+          name: `default (${chalk.yellow('babel')}, ${chalk.yellow('eslint')})`,
+          value: 'default'
+        },
+        {
+          name: 'Manually select features',
+          value: '__manual__'
+        }
+      ]
+    }
+    const featurePrompt = {
+      name: 'features',
+      when: isManualMode,
+      type: 'checkbox',
+      message: 'Check the features needed for your project:',
+      choices: [],
+      pageSize: 10
+    }
+    return {
+      presetPrompt,
+      featurePrompt
+    }
+  }
+
+  resolveOutroPrompts () {
+    const outroPrompts = [{
+      name: 'useConfigFiles',
+      when: isManualMode,
+      type: 'list',
+      message: 'Where do you prefer placing config for Babel, PostCSS, ESLint, etc.?',
+      choices: [
+        {
+          name: 'In dedicated config files',
+          value: 'files'
+        },
+        {
+          name: 'In package.json',
+          value: 'pkg'
+        }
+      ]
+    }]
+    if (hasYarn()) {
+      outroPrompts.push({
+        name: 'packageManager',
+        type: 'list',
+        message: 'Pick the package manager to use when installing dependencies:',
+        choices: [
+          {
+            name: 'Use Yarn',
+            value: 'yarn',
+            short: 'Yarn'
+          },
+          {
+            name: 'Use NPM',
+            value: 'npm',
+            short: 'NPM'
+          }
+        ]
+      })
+    }
+
+    return outroPrompts
+  }
+
+  resolveFinalPrompts () {
+    // patch generator-injected prompts to only show in manual mode
+    this.injectedPrompts.forEach(prompt => {
+      const originalWhen = prompt.when || (() => true)
+      prompt.when = answers => {
+        return isManualMode(answers) && originalWhen(answers)
+      }
+    })
+    const prompts = [
+      this.presetPrompt,
+      this.featurePrompt,
+      ...this.injectedPrompts,
+      ...this.outroPrompts
+    ]
+    return prompts
   }
 
   shouldInitGit (cliOptions) {

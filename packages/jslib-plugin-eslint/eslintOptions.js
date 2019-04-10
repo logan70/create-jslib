@@ -24,7 +24,7 @@ exports.config = api => {
 // __expression is a special flag that allows us to customize stringification
 // output when extracting configs into standalone files
 function makeJSOnlyValue (str) {
-  const fn = {}
+  const fn = () => {}
   fn.__expression = str
   return fn
 }

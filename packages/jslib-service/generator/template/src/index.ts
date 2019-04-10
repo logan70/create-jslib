@@ -6,12 +6,12 @@
  * @example
  * ```js
  *
- * hello() // output: Hello world!
+ * const helloStr = hello() // 'Hello world!'
  * ```
  */
 <%_ } _%>
-export function hello(): void {
-  console.log('Hello world!')
+export function hello(): string {
+  return 'Hello world!'
 }
 
 <%_ if (doesCompile) { _%>

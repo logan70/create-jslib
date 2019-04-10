@@ -8,8 +8,8 @@ module.exports = api => {
     details:
       `All jest command line options are supported.\n` +
       `See https://facebook.github.io/jest/docs/en/cli.html for more details.`
-  }, (args) => {
-    require('jest').run(args._)
+  }, (args, rawArgv) => {
+    require('jest').run(rawArgv)
   })
 }
 

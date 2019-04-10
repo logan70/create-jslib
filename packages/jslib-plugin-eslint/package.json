@@ -6,7 +6,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/logan70/create-jslib.git",
-    "directory": "packages/@vue/cli-plugin-eslint"
+    "directory": "packages/jslib-plugin-eslint"
   },
   "keywords": [
     "jslib",
@@ -24,7 +24,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-promise": "^4.1.1",
     "globby": "^9.2.0",
-    "jslib-util": "latest",
+    "jslib-util": "^2.0.1",
     "rollup-plugin-eslint": "^5.1.0"
   },
   "devDependencies": {

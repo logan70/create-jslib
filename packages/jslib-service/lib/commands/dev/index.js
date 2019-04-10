@@ -59,37 +59,70 @@ module.exports = (api, options) => {
 
     // handle event
     let stamp
-    let isFirstCompile = true
+    let isFirstSuccess = true
+    let isBeforeFnsFinished = false
+    let isEnd = false
+
+    const compileEndFn = async () => {
+      if (args.hasErrorOrWarning) {
+        log()
+        log('  Waiting for changes...')
+        process.env.JSLIB_TEST && console.log('  Compiled with warnings, waiting for changes...')
+        return
+      }
+
+      await api.runAfterFns('dev', args, api, options)
+
+      clearConsole()
+      done(`Compiled successfully in ${new Date().getTime() - stamp}ms`)
+      log()
+      log(formatStats(args, api))
+      if (isFirstSuccess) {
+        isFirstSuccess = false
+        const buildCommand = hasProjectYarn(api.getCwd()) ? `yarn build` : `npm run build`
+        log(`  To create a production build, run ${chalk.cyan(buildCommand)}.`)
+        log()
+      }
+      process.env.JSLIB_TEST && console.log('Compiled successfully')
+      log('  Waiting for changes...')
+    }
+
+    const compileStartFn = async () => {
+      stamp = new Date().getTime()
+      clearConsole()
+      info('Building for development...')
+      log()
+
+      await api.runBeforeFns('dev', args, api, options)
+      isBeforeFnsFinished = true
+      if (isEnd) {
+        isEnd = false
+        isBeforeFnsFinished = false
+        await compileEndFn()
+      }
+    }
+
     watcher.on('event', async (event) => {
       if (event.code === 'START') {
-        stamp = new Date().getTime()
-        clearConsole()
-        info('Building for development...')
-        log()
-
-        await api.runBeforeFns('dev', args, api, options)
+        await compileStartFn()
       } else if (event.code === 'END') {
-        if (args.hasErrorOrWarning) {
-          log()
-          log('  Waiting for changes...')
-          return
+        isEnd = true
+        if (isBeforeFnsFinished) {
+          isEnd = false
+          isBeforeFnsFinished = false
+          await compileEndFn()
         }
-
-        await api.runAfterFns('dev', args, api, options)
-
-        clearConsole()
-        done(`Compiled successfully in ${new Date().getTime() - stamp}ms`)
-        log()
-        log(formatStats(args, api))
-        if (isFirstCompile) {
-          isFirstCompile = false
-          const buildCommand = hasProjectYarn(api.getCwd()) ? `yarn build` : `npm run build`
-          log(`  To create a production build, run ${chalk.cyan(buildCommand)}.`)
-          log()
-        }
-        log('  Waiting for changes...')
       }
     })
+    if (process.env.JSLIB_TEST) {
+      process.stdin.on('data', data => {
+        if (data.toString() === 'close') {
+          console.log('got close signal!')
+          watcher.close()
+          process.exit(0)
+        }
+      })
+    }
   })
 }
 

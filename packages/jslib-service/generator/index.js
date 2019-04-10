@@ -21,7 +21,7 @@ module.exports = (api, options) => {
   if (options.formats && options.formats.join('') !== 'umd') {
     api.extendPackage({
       jslib: {
-        formats: options.formats
+        formats: options.formats || ['umd']
       }
     })
   }

@@ -37,7 +37,7 @@ Jest can be configured via `jest.config.js` in your project root, or the `jest` 
 
 By default, jest doesn't transform anything from `/node_modules`.
 
-Since jest runs in node, we also don't have to transpile anything that uses modern ECMAScript features as Node >=8 already supports these features, so it's a sensible default. cli-plugin-jest also doesn't respect the `transpileDependencies` option in `vue.config.js` for the same reason.
+Since jest runs in node, we also don't have to transpile anything that uses modern ECMAScript features as Node >=8 already supports these features, so it's a sensible default. jslib-plugin-jest also doesn't respect the `transpileDependencies` option in `jslib.config.js` for the same reason.
 
 However, we have (at least) three cases where we do need to transpile code from `/node_modules` in jest:
 

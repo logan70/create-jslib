@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-module.exports = (api, { config, lintOn = [] }, _, invoking) => {
+module.exports = (api, { config, lintOn = [] }, invoking) => {
   if (typeof lintOn === 'string') {
     lintOn = lintOn.split(',')
   }
@@ -79,7 +79,9 @@ module.exports = (api, { config, lintOn = [] }, _, invoking) => {
       pkg.husky.hooks['pre-commit'] = 'lint-staged'
     } else {
       pkg.husky = Object.assign({}, pkg.husky, {
-        'pre-commit': 'lint-staged'
+        hooks: {
+          'pre-commit': 'lint-staged'
+        }
       })
     }
     pkg['lint-staged'] = api.hasPlugin('typescript')
