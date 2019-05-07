@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-unit-jest#readme",
   "dependencies": {
-    "babel-jest": "^24.7.1",
+    "babel-jest": "^24.8.0",
     "jest": "^24.7.1"
   },
   "devDependencies": {

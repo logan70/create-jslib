@@ -36,7 +36,7 @@ module.exports = (api, _, invoking) => {
         }
       },
       devDependencies: {
-        'babel-jest': '^24.7.1'
+        'babel-jest': '^24.8.0'
       }
     })
     if (!api.hasPlugin('babel')) {
