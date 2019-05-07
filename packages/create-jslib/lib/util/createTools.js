@@ -1,7 +1,6 @@
 exports.getPromptModules = () => {
   return [
     'babel',
-    'outputFormats',
     'typescript',
     'linter',
     'doc',

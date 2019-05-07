@@ -32,7 +32,7 @@
     "fs-extra": "^7.0.1",
     "glob-to-regexp": "^0.4.1",
     "globby": "^9.2.0",
-    "inquirer": "^6.2.2",
+    "inquirer": "^6.3.1",
     "isbinaryfile": "^4.0.0",
     "javascript-stringify": "^1.6.0",
     "jslib-util": "^2.1.0",

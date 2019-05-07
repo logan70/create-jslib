@@ -5,8 +5,7 @@ const presetSchema = createSchema(joi => joi.object().keys({
   useConfigFiles: joi.boolean(),
   plugins: joi.object().required(),
   configs: joi.object(),
-  packageManager: joi.string(),
-  formats: joi.array()
+  packageManager: joi.string()
 }))
 
 exports.validatePreset = preset => validate(preset, presetSchema, msg => {
