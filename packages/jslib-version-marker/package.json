@@ -1,22 +1,22 @@
 {
   "name": "jslib-version-marker",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "version marker for create-jslib",
   "author": "Logan Lee",
   "license": "MIT",
   "main": "package.json",
   "devDependencies": {
-    "create-jslib": "^2.3.0",
-    "jslib-plugin-babel": "^2.3.0",
-    "jslib-plugin-doc": "^2.3.0",
-    "jslib-plugin-eslint": "^2.3.0",
-    "jslib-plugin-typescript": "^2.3.0",
-    "jslib-plugin-unit-jest": "^2.3.0",
-    "jslib-plugin-unit-mocha": "^2.3.0",
-    "jslib-service": "^2.3.0",
-    "jslib-test-utils": "^2.3.0",
-    "jslib-util": "^2.3.0",
-    "jslib-version-marker": "2.1.0"
+    "create-jslib": "2.3.0",
+    "jslib-plugin-babel": "2.3.0",
+    "jslib-plugin-doc": "2.3.0",
+    "jslib-plugin-eslint": "2.3.0",
+    "jslib-plugin-typescript": "2.3.0",
+    "jslib-plugin-unit-jest": "2.3.0",
+    "jslib-plugin-unit-mocha": "2.3.0",
+    "jslib-service": "2.3.0",
+    "jslib-test-utils": "2.3.0",
+    "jslib-util": "2.3.0",
+    "jslib-version-marker": "2.3.0"
   },
   "gitHead": "ddbf442c6e6fbbbab8b50993f5cc16a29e50695f"
 }
