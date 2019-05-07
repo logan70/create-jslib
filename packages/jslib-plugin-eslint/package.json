@@ -1,6 +1,6 @@
 {
   "name": "jslib-plugin-eslint",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "eslint plugin for create-jslib",
   "main": "index.js",
   "repository": {
@@ -24,7 +24,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-promise": "^4.1.1",
     "globby": "^9.2.0",
-    "jslib-util": "^2.1.0",
+    "jslib-util": "^2.2.0",
     "rollup-plugin-eslint": "^5.1.0"
   },
   "devDependencies": {
