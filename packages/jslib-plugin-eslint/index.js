@@ -1,19 +1,15 @@
-const { logWithSpinner, stopSpinner, log } = require('jslib-util')
 const lint = require('./lint')
 
 module.exports = (api, options) => {
   if (options.lintOnSave) {
-    api.addBeforeFn('build', async (args) => {
-      logWithSpinner('Linting code...')
-      log('\n')
+    api.buildStart('Linting code...', async (args) => {
       await lint({
         ...options.lintConfig,
         ...args
       }, api)
-      stopSpinner()
     })
 
-    api.addBeforeFn('dev', async (args) => {
+    api.devStart('Linting code...', async (args) => {
       args.hasErrorOrWarning = await lint({
         maxErrors: Infinity,
         maxWarnings: Infinity,

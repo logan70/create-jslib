@@ -24,7 +24,7 @@ module.exports = (api, options) => {
     runtimeHelpers: true,
     extensions: api.hasPlugin('typescript') ? ['.ts', '.tsx'] : ['.js', '.jsx']
   })
-  api.changeRollup((rollupConfig) => {
-    rollupConfig.pushPlugin(babelPlugin)
+  api.configureRollup((rollupConfig) => {
+    rollupConfig.plugins.push(babelPlugin)
   })
 }

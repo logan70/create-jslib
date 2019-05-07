@@ -1,12 +1,8 @@
-const { logWithSpinner, stopSpinner, log } = require('jslib-util')
 const generateDoc = require('./doc')
 
 module.exports = (api, options) => {
-  api.addAfterFn('build', async (args) => {
-    logWithSpinner('Generating documentation...')
-    log('\n')
+  api.buildEnd('Generating documentation...', async (args) => {
     await generateDoc(args, api)
-    stopSpinner()
   })
 
   const details = api.hasPlugin('typescript') ? 'https://typedoc.org' : 'http://usejsdoc.org'

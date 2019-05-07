@@ -18,7 +18,11 @@ module.exports = class Service {
     this.initialized = false
     this.context = context
     this.inlineOptions = inlineOptions
-    this.rollupChangeFns = []
+    this.rollupConfigurer = []
+    this.buildStartHooks = []
+    this.buildEndHooks = []
+    this.devStartHooks = []
+    this.devEndHooks = []
     this.beforeFns = {}
     this.afterFns = {}
     this.commands = {}
@@ -65,7 +69,7 @@ module.exports = class Service {
 
     // load user config
     const userOptions = this.loadUserOptions()
-    this.projectOptions = defaultsDeep(userOptions, defaults())
+    this.projectOptions = defaultsDeep(userOptions, defaults(this.pkg))
 
     debug('jslib:project-config')(this.projectOptions)
 
@@ -75,8 +79,8 @@ module.exports = class Service {
     })
 
     // apply rollup configs from project config file
-    if (this.projectOptions.changeRollup) {
-      this.rollupChangeFns.push(this.projectOptions.changeRollup)
+    if (this.projectOptions.configureRollup) {
+      this.rollupConfigurer.push(this.projectOptions.configureRollup)
     }
   }
 
@@ -255,11 +259,8 @@ module.exports = class Service {
 
   resolveRollupConfig (format = 'umd', args = {}, api = {}, options = {}) {
     const rollupConfig = new RollupConfig(format, args, api, options)
-    this.rollupChangeFns.forEach(fn => fn(rollupConfig))
-    return {
-      inputOption: rollupConfig.getInputOption(),
-      outputOption: rollupConfig.getOutputOption()
-    }
+    this.rollupConfigurer.forEach(fn => fn(rollupConfig))
+    return rollupConfig
   }
 }
 

@@ -29,6 +29,7 @@ function build (args, api, options) {
   const fs = require('fs-extra')
   const debug = require('debug')
   const rollup = require('rollup')
+  const getFormats = require('../../util/getFormats')
   const formatStats = require('../../util/formatStats')
   const {
     log,
@@ -40,24 +41,27 @@ function build (args, api, options) {
   const startTime = new Date().getTime()
 
   return new Promise(async (resolve, reject) => {
-    await api.runBeforeFns('build', args, api, options)
-
     log()
-
     const targetDir = api.resolve(args.dest || options.outputDir)
 
     if (args.clean && !args.noClean) {
       await fs.remove(targetDir)
     }
 
-    args.formats = args.formats ? args.formats.split(',') : options.formats
-    debug('jslib-service: build formats')(args.formats)
+    await api.fireHooks('buildStart', args, api, options, logWithSpinner)
 
     logWithSpinner('Generating bundles...')
-    args.filesToShowStats = []
-    await Promise.all(args.formats.map(format => {
+
+    args.formats = getFormats(args, options)
+    debug('jslib-service: build formats')(args.formats)
+
+    const getTask = (format, uglify) => {
       return new Promise(async (resolve) => {
-        const { inputOption, outputOption } = api.service.resolveRollupConfig(format, args, api, options)
+        const copyArgs = Object.assign({}, args)
+        if (uglify) {
+          copyArgs.uglify = true
+        }
+        const { output: outputOption, ...inputOption } = api.service.resolveRollupConfig(format, copyArgs, api, options)
 
         // create bundle task
         const bundle = await rollup.rollup(inputOption)
@@ -66,23 +70,29 @@ function build (args, api, options) {
         await bundle.write(outputOption)
 
         // record bundle path in order to log stats
-        args.filesToShowStats.push(outputOption.file)
         resolve()
       })
-    }))
+    }
+    await Promise.all(args.formats.reduce((taskArr, format) => {
+      // uncompressed version
+      taskArr.push(getTask(format))
+      // compressed version
+      taskArr.push(getTask(format, true))
+      return taskArr
+    }, []))
 
-    await api.runAfterFns('build', args, api, options)
+    await api.fireHooks('buildEnd', args, api, options, logWithSpinner)
+    stopSpinner()
 
     process.env.JSLIB_TEST && console.log('Build complete.')
 
     const endTime = new Date().getTime()
-    stopSpinner()
     clearConsole()
     done(`Compiled successfully in ${endTime - startTime}ms`)
     log()
 
     // log file stats
-    log(formatStats(args, api))
+    log(formatStats(api, options))
 
     resolve()
   })

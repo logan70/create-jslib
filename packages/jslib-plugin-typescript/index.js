@@ -1,5 +1,4 @@
 const lint = require('./lib/tslint')
-const { logWithSpinner, stopSpinner, log } = require('jslib-util')
 
 module.exports = (api, options) => {
   const typeScript = require('rollup-plugin-typescript2')
@@ -7,23 +6,20 @@ module.exports = (api, options) => {
     exclude: ['node_modules/**', '*.d.ts', '**/*.d.ts'],
     tsconfigOverride: { compilerOptions: { module: 'ES2015' }}
   })
-  api.changeRollup((rollupConfig) => {
-    rollupConfig.unshiftPlugin(tsPlugin)
+  api.configureRollup((rollupConfig) => {
+    rollupConfig.plugins.unshift(tsPlugin)
   })
 
   if (!api.hasPlugin('eslint')) {
     if (options.lintOnSave) {
-      api.addBeforeFn('build', async (args) => {
-        logWithSpinner('Linting code...')
-        log()
+      api.buildStart('Linting code...', async (args) => {
         await lint({
           ...options.lintConfig,
           ...args
         }, api)
-        stopSpinner()
       })
 
-      api.addBeforeFn('dev', async (args) => {
+      api.devStart('Linting code...', async (args) => {
         args.hasErrorOrWarning = await lint({
           ...options.lintConfig,
           ...args,

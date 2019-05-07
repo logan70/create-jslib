@@ -22,22 +22,29 @@ const makeRow = (a, b, c) => `  ${a}\t    ${b}\t ${c}`
  * @param {String[]} files
  * @param {String} file - path of file relative to root directory
  */
-module.exports = (args = {}, api) => {
-  if (typeof args !== 'object' || !args.targetDir || !args.filesToShowStats) {
+module.exports = (api = {}, options = {}) => {
+  const context = api.service && api.service.context || process.cwd()
+  const outputDir = options.outputDir || 'dist'
+  const bundleReg = /\.js$/
 
+  const files = fs.readdirSync(outputDir)
+    .filter(file => bundleReg.test(file))
+    .map((file) => {
+      file = path.join(outputDir, file)
+      const size = getSize(file)
+      const gzippedSize = getGzippedSize(file)
+      return {
+        file: path.relative(context, file),
+        size,
+        gzippedSize
+      }
+    })
+
+  if (!files.length) {
+    return ''
   }
-  // get size and gzipped size of file
-  const assets = args.filesToShowStats.map((file) => {
-    const size = getSize(file)
-    const gzippedSize = getGzippedSize(file)
-    return {
-      file: path.relative(api.service.context, file),
-      size,
-      gzippedSize
-    }
-  })
 
-  assets.sort((a, b) => b.size - a.size)
+  files.sort((a, b) => parseFloat(b.size) - parseFloat(a.size))
 
   // output file status
   const ui = cliui({ width: 80 })
@@ -47,7 +54,7 @@ module.exports = (args = {}, api) => {
       chalk.cyan.bold(`Size`),
       chalk.cyan.bold(`Gzipped`)
     ) + `\n\n` +
-    assets.map(asset => makeRow(
+    files.map(asset => makeRow(
       chalk.green(asset.file),
       asset.size,
       asset.gzippedSize

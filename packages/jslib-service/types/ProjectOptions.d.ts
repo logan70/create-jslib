@@ -10,5 +10,5 @@ export interface ProjectOptions {
   banner?: string;
   footer?: string;
 
-  changeRollup?: (config: any) => void;
+  configureRollup?: (config: any) => void;
 }

@@ -71,48 +71,105 @@ class PluginAPI {
    *
    * @param {function} fn
    */
-  changeRollup (fn) {
-    this.service.rollupChangeFns.push(fn)
+  configureRollup (fn) {
+    this.service.rollupConfigurer.push(fn)
   }
 
   /**
-   * Register a function that will receive args passed by user
-   * the function will should be called in when register a command
+   * Register a function that will be called before rollup.rollup build.
    *
-   * @param {String} mode - mode of command. e.g. 'build' 'dev'
+   * @param {function} desc - description
    * @param {function} fn
    */
-  addBeforeFn (mode, fn) {
-    (this.service.beforeFns[mode] || (this.service.beforeFns[mode] = [])).push(fn)
+  buildStart (desc, fn) {
+    if (typeof desc === 'function') {
+      fn = desc
+      desc = 'Running custom hooks...'
+    }
+    this.service.buildStartHooks.push({
+      desc,
+      fn
+    })
   }
 
   /**
-   * Register a function that will receive args passed by user
-   * the function will should be called in when register a command
+   * Register a function that will be called once all bundle files have been written.
    *
-   * @param {String} mode - mode of command. e.g. 'build' 'dev'
+   * @param {function} desc - description
    * @param {function} fn
    */
-  addAfterFn (mode, fn) {
-    (this.service.afterFns[mode] || (this.service.afterFns[mode] = [])).push(fn)
+  buildEnd (desc, fn) {
+    if (typeof desc === 'function') {
+      fn = desc
+      desc = 'Running custom hooks...'
+    }
+    this.service.buildEndHooks.push({
+      desc,
+      fn
+    })
   }
 
-  async runBeforeFns (mode, args, api, options) {
-    const beforeFns = this.service.beforeFns[mode]
-    if (beforeFns && beforeFns.length) {
-      for (const beforeFn of beforeFns) {
-        await beforeFn(args, api, options)
-      }
+  /**
+   * Register a function that will be called before rebuilds.
+   *
+   * @param {function} desc - description
+   * @param {function} fn
+   */
+  devStart (desc, fn) {
+    if (typeof desc === 'function') {
+      fn = desc
+      desc = 'Running custom hooks...'
     }
+    this.service.devStartHooks.push({
+      desc,
+      fn
+    })
   }
 
-  async runAfterFns (mode, args, api, options) {
-    const afterFns = this.service.afterFns[mode]
-    if (afterFns && afterFns.length) {
-      for (const afterFn of afterFns) {
-        await afterFn(args, api, options)
+  /**
+   * Register a function that will be called once rebuild finished.
+   *
+   * @param {function} desc - description
+   * @param {function} fn
+   */
+  devEnd (desc, fn) {
+    if (typeof desc === 'function') {
+      fn = desc
+      desc = 'Running custom hooks...'
+    }
+    this.service.devEndHooks.push({
+      desc,
+      fn
+    })
+  }
+
+  /**
+   * Executing corresponding hooks.
+   *
+   * @param {function} desc - description
+   * @param {function} fn
+   */
+  fireHooks (type, args, api, options, spinner) {
+    const hookTypes = []
+    for (const key in this.service) {
+      if (this.service.hasOwnProperty(key)) {
+        const result = /(\w*)Hooks/.exec(key)
+        if (result && result[1]) {
+          hookTypes.push(result[1])
+        }
       }
     }
+    if (!hookTypes.includes(type)) {
+      return
+    }
+    return this.service[`${type}Hooks`].reduce((promise, { desc, fn }) => {
+      promise = promise.then(async () => {
+        if (spinner && desc) {
+          spinner(desc)
+        }
+        await fn(args, api, options)
+      })
+    }, Promise.resolve())
   }
 }
 

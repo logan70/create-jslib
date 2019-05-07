@@ -16,13 +16,4 @@ module.exports = (api, options) => {
   if (options.configs) {
     api.extendPackage(options.configs)
   }
-
-  // rollup format configuration
-  if (options.formats && options.formats.join('') !== 'umd') {
-    api.extendPackage({
-      jslib: {
-        formats: options.formats || ['umd']
-      }
-    })
-  }
 }

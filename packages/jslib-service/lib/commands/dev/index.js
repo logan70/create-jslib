@@ -6,6 +6,10 @@ const {
   hasProjectYarn
 } = require('jslib-util')
 
+const defaults = {
+  clean: true
+}
+
 module.exports = (api, options) => {
   const srcType = require('../../util/getSrcType')(api)
   api.registerCommand('dev', {
@@ -18,41 +22,30 @@ module.exports = (api, options) => {
       '--name': `name for umd bundle (default: "name" in package.json or entry filename)`
     }
   }, async function dev (args) {
-    const debug = require('debug')
+    const fs = require('fs-extra')
     const chalk = require('chalk')
     const rollup = require('rollup')
-    const getDevFormat = require('./getDevFormat')
+    const getFormats = require('../../util/getFormats')
     const formatStats = require('../../util/formatStats')
 
+    for (const key in defaults) {
+      if (args[key] == null) {
+        args[key] = defaults[key]
+      }
+    }
+    args.watch = true
     args.entry = args.entry || args._[0] || options.entry || `src/index.${srcType}`
-    args.formats = args.formats ? args.formats.split(',') : options.formats
-    let formatToDev
-    if (args.formats.length > 1) {
-      formatToDev = await getDevFormat(args.formats)
-    } else {
-      formatToDev = args.formats[0] ? args.formats[0].replace(/[\-\.]min/, '') : 'umd'
+    args.formats = getFormats(args, options)
+
+    const targetDir = api.resolve(args.dest || options.outputDir)
+
+    if (args.clean && !args.noClean) {
+      await fs.remove(targetDir)
     }
 
-    debug('jslib-service:devFormat')(formatToDev)
-
-    // get rollup option
-    const { inputOption, outputOption } = api.service.resolveRollupConfig(formatToDev, args, api, options)
-    debug('jslib-service:rollupInput')(inputOption)
-    debug('jslib-service:rollupOutput')(outputOption)
-    args.filesToShowStats = [outputOption.file]
-
-    // rollup watch mode options
-    const watchOption = {
-      // chokidar should be used instead of the built-in fs.watch
-      chokidar: true,
-      include: args.entry.replace(/\/.*/, '/**'),
-      clearScreen: false
-    }
-    const rollupOptions = {
-      ...inputOption,
-      output: outputOption,
-      watch: watchOption
-    }
+    const rollupOptions = args.formats.map((format) => {
+      return api.service.resolveRollupConfig(format, args, api, options)
+    })
 
     // start to watch
     const watcher = rollup.watch(rollupOptions)
@@ -60,58 +53,38 @@ module.exports = (api, options) => {
     // handle event
     let stamp
     let isFirstSuccess = true
-    let isBeforeFnsFinished = false
-    let isEnd = false
-
-    const compileEndFn = async () => {
-      if (args.hasErrorOrWarning) {
-        log()
-        log('  Waiting for changes...')
-        process.env.JSLIB_TEST && console.log('  Compiled with warnings, waiting for changes...')
-        return
-      }
-
-      await api.runAfterFns('dev', args, api, options)
-
-      clearConsole()
-      done(`Compiled successfully in ${new Date().getTime() - stamp}ms`)
-      log()
-      log(formatStats(args, api))
-      if (isFirstSuccess) {
-        isFirstSuccess = false
-        const buildCommand = hasProjectYarn(api.getCwd()) ? `yarn build` : `npm run build`
-        log(`  To create a production build, run ${chalk.cyan(buildCommand)}.`)
-        log()
-      }
-      process.env.JSLIB_TEST && console.log('Compiled successfully')
-      log('  Waiting for changes...')
-    }
-
-    const compileStartFn = async () => {
-      stamp = new Date().getTime()
-      clearConsole()
-      info('Building for development...')
-      log()
-
-      await api.runBeforeFns('dev', args, api, options)
-      isBeforeFnsFinished = true
-      if (isEnd) {
-        isEnd = false
-        isBeforeFnsFinished = false
-        await compileEndFn()
-      }
-    }
 
     watcher.on('event', async (event) => {
       if (event.code === 'START') {
-        await compileStartFn()
+        stamp = new Date().getTime()
+        clearConsole()
+        info('Building for development...')
+        log()
+        log(isFirstSuccess ? '  Building...' : '  Rebuilding...')
+
+        await api.fireHooks('devStart', args, api, options)
       } else if (event.code === 'END') {
-        isEnd = true
-        if (isBeforeFnsFinished) {
-          isEnd = false
-          isBeforeFnsFinished = false
-          await compileEndFn()
+        if (args.hasErrorOrWarning) {
+          log()
+          log('  Waiting for changes...')
+          process.env.JSLIB_TEST && console.log('  Compiled with warnings, waiting for changes...')
+          return
         }
+
+        await api.fireHooks('devEnd', args, api, options)
+
+        clearConsole()
+        done(`Compiled successfully in ${new Date().getTime() - stamp}ms`)
+        log()
+        log(formatStats(api, options))
+        if (isFirstSuccess) {
+          isFirstSuccess = false
+          const buildCommand = hasProjectYarn(api.getCwd()) ? `yarn build` : `npm run build`
+          log(`  To create a production build, run ${chalk.cyan(buildCommand)}.`)
+          log()
+        }
+        process.env.JSLIB_TEST && console.log('Compiled successfully')
+        log('  Waiting for changes...')
       }
     })
     if (process.env.JSLIB_TEST) {
