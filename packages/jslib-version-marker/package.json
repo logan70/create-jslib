@@ -17,5 +17,6 @@
     "jslib-test-utils": "^2.2.0",
     "jslib-util": "^2.2.0",
     "jslib-version-marker": "2.1.0"
-  }
+  },
+  "gitHead": "ddbf442c6e6fbbbab8b50993f5cc16a29e50695f"
 }

@@ -61,8 +61,8 @@ test('loading plugins from package.json', () => {
   mockPkg({
     devDependencies: {
       'bar': '^1.0.0',
-      'jslib-plugin-babel': '^2.2.0',
-      'jslib-plugin-foo': '^2.2.0'
+      'jslib-plugin-babel': '^2.3.0',
+      'jslib-plugin-foo': '^2.3.0'
     }
   })
   const service = new Service('/') // this one needs to read from package.json
