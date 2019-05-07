@@ -78,7 +78,9 @@ test('should work', async () => {
     }
     if (data.match(/Compiled with warnings, waiting for changes/)) {
       // fix it
-      write('src/index.js', main)
+      setTimeout(() => {
+        write('src/index.js', main)
+      }, 100)
     }
 
     if (data.match(/Compiled successfully/)) {

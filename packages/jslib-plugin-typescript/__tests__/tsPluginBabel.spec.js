@@ -13,15 +13,17 @@ test('using correct loader', () => {
   })
 
   service.init()
-  const { inputOption, outputOption } = service.resolveRollupConfig()
+  const { output: outputOption, ...inputOption } = service.resolveRollupConfig()
   // rollup-plugin-typescript2
   expect(inputOption.plugins[0].name).toBe('rpt2')
   // rollup-plugin-node-resolve
   expect(inputOption.plugins[1].name).toBe('node-resolve')
   // rollup-plugin-commonjs
   expect(inputOption.plugins[2].name).toBe('commonjs')
+  // rollup-plugin-json
+  expect(inputOption.plugins[3].name).toBe('json')
   // rollup-plugin-babel
-  expect(inputOption.plugins[3].name).toBe('babel')
+  expect(inputOption.plugins[4].name).toBe('babel')
   // default to compile to umd format
   expect(outputOption.format).toBe('umd')
 })
