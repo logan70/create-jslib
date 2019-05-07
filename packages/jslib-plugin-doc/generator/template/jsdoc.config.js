@@ -1,4 +1,5 @@
 <%_ if (!useTS) { _%>
+const path = require('path')
 module.exports = {
   tags: {
     allowUnknownTags: true,
@@ -15,7 +16,7 @@ module.exports = {
     monospaceLinks: false
   },
   opts: {
-    template: 'node_modules/docdash',
+    template: path.relative(process.cwd(), path.resolve(require.resolve('docdash/publish'), '../')),
     encoding: 'utf8',
     destination: 'docs/',
     recurse: true
