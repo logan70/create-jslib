@@ -3,6 +3,23 @@ const path = require('path')
 const zlib = require('zlib')
 const cliui = require('cliui')
 const chalk = require('chalk')
+
+// get list of all files in target directory
+const getFiles = (targetDir) => {
+  let allFiles = []
+  const files = fs.readdirSync(targetDir)
+  files.forEach(file => {
+    const filePath = path.join(targetDir, file)
+    if (fs.statSync(filePath).isFile()) {
+      allFiles.push(filePath)
+    }
+    if (fs.statSync(filePath).isDirectory()) {
+      allFiles = [...allFiles, ...getFiles(filePath)]
+    }
+  })
+  return allFiles
+}
+
 // format size to 'kb' unit
 const formatSize = size => (size / 1024).toFixed(2) + ' kb'
 
@@ -27,10 +44,9 @@ module.exports = (api = {}, options = {}) => {
   const outputDir = options.outputDir || 'dist'
   const bundleReg = /\.js$/
 
-  const files = fs.readdirSync(outputDir)
+  const files = getFiles(outputDir)
     .filter(file => bundleReg.test(file))
     .map((file) => {
-      file = path.join(outputDir, file)
       const size = getSize(file)
       const gzippedSize = getGzippedSize(file)
       return {

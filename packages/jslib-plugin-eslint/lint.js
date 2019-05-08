@@ -44,6 +44,7 @@ module.exports = async function lint (args = {}, api) {
     // an addition to eslintignore, i.e. it can't be overriden by user),
     // following the principle of least astonishment.
     config.ignorePattern = [
+      'jslib.config.js',
       '!.*.js',
       '!{src,tests,__tests__}/**/.*.js'
     ]
