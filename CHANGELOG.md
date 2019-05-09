@@ -5,13 +5,6 @@
 
 
 
-## 2.3.0 (2019-05-07)
-
-* v2.3.0 ([ad07ed9](https://github.com/logan70/create-jslib/commit/ad07ed9))
-* chore: pre release sync ([c496da1](https://github.com/logan70/create-jslib/commit/c496da1))
-
-
-
 ## 2.1.0 (2019-04-10)
 
 * v2.1.0 ([1ed234e](https://github.com/logan70/create-jslib/commit/1ed234e))
