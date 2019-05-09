@@ -4,6 +4,7 @@ const schema = createSchema(joi => joi.object({
   name: joi.string(),
   outputDir: joi.string(),
   formats: joi.array(),
+  uglify: joi.boolean(),
   transpileDependencies: joi.array(),
   productionSourceMap: joi.boolean(),
 
@@ -37,6 +38,9 @@ exports.defaults = ({ name, version }) => ({
   // cjs – CommonJS, suitable for Node and other bundlers
   // esm – Keep the bundle as an ES module file, suitable for other bundlers and inclusion as a <script type=module> tag in modern browsers
   formats: ['umd'],
+
+  // minify js bundles
+  uglify: false,
 
   // deps to transpile
   transpileDependencies: [/* string or regex */],

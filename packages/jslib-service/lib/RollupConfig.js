@@ -31,15 +31,28 @@ class RollupConfig {
       name: args.name || options.name || 'jslib-project',
       file: `${options.outputDir || 'dist'}/${outputMap[format] || 'index.' + format + '.js'}`,
       banner: options.banner || '',
-      sourcemap: isDef(options.productionSourceMap)
-        ? Boolean(options.productionSourceMap)
-        : process.env.NODE_ENV === 'production'
+      sourcemap: process.env.NODE_ENV !== 'production'
+        ? false
+        : isDef(options.productionSourceMap)
+          ? Boolean(options.productionSourceMap)
+          : false
     }
 
     if (args.uglify) {
-      const uglifyPlugin = format === 'esm' ? terser() : uglify()
+      const uglifyPlugin = format === 'esm'
+        ? terser()
+        : uglify({
+          output: {
+            comments: (node, comment) => {
+              if (comment.type === 'comment2') {
+                // multiline comment
+                return /@preserve|@license|@cc_on|Generated\sby\screate\-jslib/i.test(comment.value)
+              }
+              return false
+            }
+          }
+        })
       this.plugins.push(uglifyPlugin)
-      this.output.file = this.output.file.replace(/(\.jsx?$)/, '.min$1')
     }
 
     if (args.watch) {

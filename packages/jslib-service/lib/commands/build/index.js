@@ -12,6 +12,7 @@ module.exports = (api, options) => {
       '--dest': `specify output directory (default: ${options.outputDir})`,
       '--formats': `list of output formats for library builds (default: ${options.formats.join(',')})`,
       '--name': `name for umd bundle (default: "name" in package.json or entry filename)`,
+      '--uglify': `minify js bundles (default: false)`,
       '--no-clean': `do not remove the dist directory before building the project`
     }
   }, async (args) => {
@@ -58,9 +59,8 @@ function build (args, api, options) {
     const getTask = (format, uglify) => {
       return new Promise(async (resolve) => {
         const copyArgs = Object.assign({}, args)
-        if (uglify) {
-          copyArgs.uglify = true
-        }
+        copyArgs.uglify = uglify
+
         const { output: outputOption, ...inputOption } = api.service.resolveRollupConfig(format, copyArgs, api, options)
 
         // create bundle task
@@ -74,10 +74,7 @@ function build (args, api, options) {
       })
     }
     await Promise.all(args.formats.reduce((taskArr, format) => {
-      // uncompressed version
-      taskArr.push(getTask(format))
-      // compressed version
-      taskArr.push(getTask(format, true))
+      taskArr.push(getTask(format, options.uglify))
       return taskArr
     }, []))
 

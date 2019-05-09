@@ -17,7 +17,8 @@ exports.config = api => {
       ]
     ],
     plugins: [
-      ['@babel/plugin-transform-runtime', { useESModules: true }]
+      ['@babel/plugin-transform-runtime', { useESModules: true }],
+      '@babel/plugin-syntax-dynamic-import'
     ]
   }
   return config
