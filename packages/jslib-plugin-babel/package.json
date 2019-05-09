@@ -1,6 +1,6 @@
 {
   "name": "jslib-plugin-babel",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "babel plugin for create-jslib",
   "main": "index.js",
   "repository": {
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/logan70/create-jslib/tree/master/packages/jslib-plugin-babel#readme",
   "dependencies": {
-    "jslib-util": "^2.4.0",
+    "jslib-util": "^2.4.1",
     "rollup-plugin-babel": "^4.3.2"
   },
   "devDependencies": {

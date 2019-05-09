@@ -1,6 +1,6 @@
 {
   "name": "jslib-plugin-unit-jest",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "unit-jest plugin for create-jslib",
   "main": "index.js",
   "repository": {
