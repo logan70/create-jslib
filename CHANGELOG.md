@@ -1,3 +1,11 @@
+## <small>2.4.2 (2019-06-27)</small>
+
+* v2.4.2 ([a89aff6](https://github.com/logan70/create-jslib/commit/a89aff6))
+* fix: handle errors while running rollup ([dfd3c44](https://github.com/logan70/create-jslib/commit/dfd3c44))
+* chore: remove package-lock.json ([1fc04d1](https://github.com/logan70/create-jslib/commit/1fc04d1))
+
+
+
 ## 2.3.0 (2019-05-07)
 
 * v2.3.0 ([ad07ed9](https://github.com/logan70/create-jslib/commit/ad07ed9))
