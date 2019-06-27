@@ -259,7 +259,7 @@ module.exports = class Service {
 
   resolveRollupConfig (format = 'umd', args = {}, api = {}, options = {}) {
     const rollupConfig = new RollupConfig(format, args, api, options)
-    this.rollupConfigurer.forEach(fn => fn(rollupConfig))
+    this.rollupConfigurer.forEach(fn => fn(rollupConfig, format))
     return rollupConfig
   }
 }

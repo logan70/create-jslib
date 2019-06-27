@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const semver = require('semver')
-const { error } = require('jslib-util')
+const { error, pauseSpinner } = require('jslib-util')
 const requiredVersion = require('../package.json').engines.node
 
 if (!semver.satisfies(process.version, requiredVersion)) {
@@ -26,6 +26,7 @@ const args = require('minimist')(rawArgv, {
 const command = args._[0]
 
 service.run(command, args, rawArgv).catch(err => {
+  pauseSpinner()
   error(err)
   process.exit(1)
 })

@@ -2,6 +2,7 @@ const {
   info,
   log,
   done,
+  error,
   clearConsole,
   hasProjectYarn
 } = require('jslib-util')
@@ -19,14 +20,14 @@ module.exports = (api, options) => {
       '--entry': `specify entry point (default: src/index.${srcType})`,
       '--dest': `specify output directory (default: ${options.outputDir})`,
       '--formats': `list of output formats for library builds (default: ${options.formats.join(',')})`,
-      '--name': `name for umd bundle (default: "name" in package.json or entry filename)`
+      '--name': `name for umd bundle (default: "name" in package.json or entry filename)`,
+      '--no-clean': `do not remove the dist directory before building the project`
     }
   }, async function dev (args) {
     const fs = require('fs-extra')
     const chalk = require('chalk')
     const rollup = require('rollup')
     const getFormats = require('../../util/getFormats')
-    const formatStats = require('../../util/formatStats')
 
     for (const key in defaults) {
       if (args[key] == null) {
@@ -76,7 +77,6 @@ module.exports = (api, options) => {
         clearConsole()
         done(`Compiled successfully in ${new Date().getTime() - stamp}ms`)
         log()
-        log(formatStats(api, options))
         if (isFirstSuccess) {
           isFirstSuccess = false
           const buildCommand = hasProjectYarn(api.getCwd()) ? `yarn build` : `npm run build`
@@ -85,6 +85,8 @@ module.exports = (api, options) => {
         }
         process.env.JSLIB_TEST && console.log('Compiled successfully')
         log('  Waiting for changes...')
+      } else if (event.code === 'ERROR' || event.code === 'FATAL') {
+        error(event.error || 'rollup error!')
       }
     })
     if (process.env.JSLIB_TEST) {

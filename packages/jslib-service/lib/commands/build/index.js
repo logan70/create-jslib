@@ -26,7 +26,7 @@ module.exports = (api, options) => {
   })
 }
 
-function build (args, api, options) {
+async function build (args, api, options) {
   const fs = require('fs-extra')
   const debug = require('debug')
   const rollup = require('rollup')
@@ -41,58 +41,50 @@ function build (args, api, options) {
   } = require('jslib-util')
   const startTime = new Date().getTime()
 
-  return new Promise(async (resolve, reject) => {
-    log()
-    const targetDir = api.resolve(args.dest || options.outputDir)
+  log()
+  const targetDir = api.resolve(args.dest || options.outputDir)
 
-    if (args.clean && !args.noClean) {
-      await fs.remove(targetDir)
-    }
+  if (args.clean && !args.noClean) {
+    await fs.remove(targetDir)
+  }
 
-    await api.fireHooks('buildStart', args, api, options, logWithSpinner)
+  await api.fireHooks('buildStart', args, api, options, logWithSpinner)
 
-    logWithSpinner('Generating bundles...')
+  logWithSpinner('Generating bundles...')
 
-    args.formats = getFormats(args, options)
-    debug('jslib-service: build formats')(args.formats)
+  args.formats = getFormats(args, options)
+  debug('jslib-service: build formats')(args.formats)
 
-    const getTask = (format, uglify) => {
-      return new Promise(async (resolve) => {
-        const copyArgs = Object.assign({}, args)
-        copyArgs.uglify = uglify
+  const getTask = (format, uglify) => {
+    const copyArgs = Object.assign({}, args)
+    copyArgs.uglify = uglify
 
-        const { output: outputOption, ...inputOption } = api.service.resolveRollupConfig(format, copyArgs, api, options)
+    const { output: outputOption, ...inputOption } = api.service.resolveRollupConfig(format, copyArgs, api, options)
 
-        // create bundle task
-        const bundle = await rollup.rollup(inputOption)
+    // create bundle task
+    return rollup.rollup(inputOption).then(bundle => {
+      // generate bundle
+      return bundle.write(outputOption)
+    })
+  }
 
-        // generate bundle
-        await bundle.write(outputOption)
+  // generate bundle for each format
+  await Promise.all(args.formats.map(format => getTask(format, options.uglify)))
 
-        // record bundle path in order to log stats
-        resolve()
-      })
-    }
-    await Promise.all(args.formats.reduce((taskArr, format) => {
-      taskArr.push(getTask(format, options.uglify))
-      return taskArr
-    }, []))
+  // execute hooks after bundle success
+  await api.fireHooks('buildEnd', args, api, options, logWithSpinner)
 
-    await api.fireHooks('buildEnd', args, api, options, logWithSpinner)
-    stopSpinner()
+  stopSpinner()
 
-    process.env.JSLIB_TEST && console.log('Build complete.')
+  process.env.JSLIB_TEST && console.log('Build complete.')
 
-    const endTime = new Date().getTime()
-    clearConsole()
-    done(`Compiled successfully in ${endTime - startTime}ms`)
-    log()
+  const endTime = new Date().getTime()
+  clearConsole()
+  done(`Compiled successfully in ${endTime - startTime}ms`)
+  log()
 
-    // log file stats
-    log(formatStats(api, options))
-
-    resolve()
-  })
+  // log file stats
+  log(formatStats(api, options))
 }
 
 module.exports.defaultModes = {
