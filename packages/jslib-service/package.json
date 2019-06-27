@@ -1,6 +1,6 @@
 {
   "name": "jslib-service",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "local service for create-jslib projects",
   "main": "lib/Service.js",
   "typings": "types/index.d.ts",

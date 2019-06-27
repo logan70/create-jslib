@@ -1,6 +1,6 @@
 {
   "name": "jslib-version-marker",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "version marker for create-jslib",
   "author": "Logan Lee",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "jslib-plugin-typescript": "^2.4.1",
     "jslib-plugin-unit-jest": "^2.4.1",
     "jslib-plugin-unit-mocha": "^2.4.1",
-    "jslib-service": "^2.4.1",
+    "jslib-service": "^2.4.2",
     "jslib-test-utils": "^2.4.1",
     "jslib-util": "^2.4.1",
     "jslib-version-marker": "2.3.0"
