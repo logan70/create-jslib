@@ -1,3 +1,10 @@
+## <small>2.4.4 (2019-06-28)</small>
+
+* v2.4.4 ([aa6f236](https://github.com/logan70/create-jslib/commit/aa6f236))
+* chore: pre release sync ([84e078f](https://github.com/logan70/create-jslib/commit/84e078f))
+
+
+
 ## <small>2.4.2 (2019-06-27)</small>
 
 * v2.4.2 ([a89aff6](https://github.com/logan70/create-jslib/commit/a89aff6))
