@@ -9,11 +9,11 @@
     "create-jslib": "2.4.1",
     "jslib-plugin-babel": "2.4.1",
     "jslib-plugin-doc": "2.4.1",
-    "jslib-plugin-eslint": "2.4.1",
+    "jslib-plugin-eslint": "^2.4.3",
     "jslib-plugin-typescript": "2.4.1",
     "jslib-plugin-unit-jest": "2.4.1",
     "jslib-plugin-unit-mocha": "2.4.1",
-    "jslib-service": "2.4.2",
+    "jslib-service": "^2.4.3",
     "jslib-test-utils": "2.4.1",
     "jslib-util": "2.4.1",
     "jslib-version-marker": "2.4.2"
