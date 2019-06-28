@@ -1,14 +1,15 @@
 const lint = require('./lint')
 
 module.exports = (api, options) => {
-  if (options.lintOnSave) {
-    api.buildStart('Linting code...', async (args) => {
-      await lint({
-        ...options.lintConfig,
-        ...args
-      }, api)
-    })
+  api.buildStart('Linting code...', async (args) => {
+    await lint({
+      ...options.lintConfig,
+      ...args
+    }, api)
+  })
 
+  // if lintOnSave is false, disable eslint in development mode
+  if (options.lintOnSave) {
     api.devStart('Linting code...', async (args) => {
       args.hasErrorOrWarning = await lint({
         maxErrors: Infinity,

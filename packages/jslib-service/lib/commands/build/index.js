@@ -55,9 +55,11 @@ async function build (args, api, options) {
   args.formats = getFormats(args, options)
   debug('jslib-service: build formats')(args.formats)
 
-  const getTask = (format, uglify) => {
+  const getTask = (format) => {
     const copyArgs = Object.assign({}, args)
-    copyArgs.uglify = uglify
+    if (typeof copyArgs.uglify === 'undefined') {
+      copyArgs.uglify = options.uglify
+    }
 
     const { output: outputOption, ...inputOption } = api.service.resolveRollupConfig(format, copyArgs, api, options)
 
@@ -69,7 +71,7 @@ async function build (args, api, options) {
   }
 
   // generate bundle for each format
-  await Promise.all(args.formats.map(format => getTask(format, options.uglify)))
+  await Promise.all(args.formats.map(format => getTask(format)))
 
   // execute hooks after bundle success
   await api.fireHooks('buildEnd', args, api, options, logWithSpinner)
