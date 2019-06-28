@@ -1,3 +1,18 @@
+## <small>2.4.5 (2019-06-28)</small>
+
+* fix: release version-marker independently ([ee9b4f1](https://github.com/logan70/create-jslib/commit/ee9b4f1))
+* chore: 2.4.4 changelog ([7102f79](https://github.com/logan70/create-jslib/commit/7102f79))
+* chore: jslib-version-marker@2.4.5 ([ebe6018](https://github.com/logan70/create-jslib/commit/ebe6018))
+
+
+
+## <small>2.4.4 (2019-06-28)</small>
+
+* v2.4.4 ([aa6f236](https://github.com/logan70/create-jslib/commit/aa6f236))
+* chore: pre release sync ([84e078f](https://github.com/logan70/create-jslib/commit/84e078f))
+
+
+
 ## <small>2.4.4 (2019-06-28)</small>
 
 * v2.4.4 ([aa6f236](https://github.com/logan70/create-jslib/commit/aa6f236))
